@@ -1,4 +1,5 @@
 # zatca-qr-code
+![](https://img.shields.io/gem/v/zatca-qr-code) ![](https://img.shields.io/github/workflow/status/mrsool/zatca-qr-code/Ruby)
 
 [🚧 Still being validated by ZATCA](https://github.com/mrsool/zatca-qr-code/issues/3).
 
