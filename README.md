@@ -1,4 +1,7 @@
 # zatca-qr-code
+
+[🚧 Still being validated by ZATCA](https://github.com/mrsool/zatca-qr-code/issues/3).
+
 A library for generating QR Codes for the e-invoice standard by ZATCA in Saudi Arabia.
 
 # Installation
