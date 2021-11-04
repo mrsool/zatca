@@ -20,7 +20,7 @@ bundle add zatca-qr-code
 # Usage
 
 ```rb
-require "zatca-qr-code"
+require "zatca"
 
 tags = {
   seller_name: "Mrsool",
@@ -38,7 +38,7 @@ ZATCA.render_qr_code(tags)
 If you'd like to customize the size of the QR Code you can manually use the generator like so:
 
 ```rb
-require "zatca-qr-code"
+require "zatca"
 
 tags = ZATCA::Tags.new({
   seller_name: "Mrsool",
