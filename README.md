@@ -1,7 +1,7 @@
-# zatca-qr-code
-![](https://img.shields.io/gem/v/zatca-qr-code) ![](https://img.shields.io/github/workflow/status/mrsool/zatca-qr-code/Ruby)
+# zatca
+![](https://img.shields.io/gem/v/zatca) ![](https://img.shields.io/github/workflow/status/mrsool/zatca/Ruby)
 
-[🚧 Still being validated by ZATCA](https://github.com/mrsool/zatca-qr-code/issues/3).
+[🚧 Still being validated by ZATCA](https://github.com/mrsool/zatca/issues/3).
 
 A Ruby library for generating QR Codes for the e-invoice standard by ZATCA in Saudi Arabia.
 
@@ -9,18 +9,18 @@ A Ruby library for generating QR Codes for the e-invoice standard by ZATCA in Sa
 
 ## Rubygems
 ```sh
-gem install zatca-qr-code
+gem install zatca
 ```
 
 ## Bundler
 ```sh
-bundle add zatca-qr-code
+bundle add zatca
 ```
 
 # Usage
 
 ```rb
-require "zatca-qr-code"
+require "zatca"
 
 tags = {
   seller_name: "Mrsool",
@@ -38,7 +38,7 @@ ZATCA.render_qr_code(tags)
 If you'd like to customize the size of the QR Code you can manually use the generator like so:
 
 ```rb
-require "zatca-qr-code"
+require "zatca"
 
 tags = ZATCA::Tags.new({
   seller_name: "Mrsool",
