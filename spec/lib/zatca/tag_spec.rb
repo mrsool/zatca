@@ -1,5 +1,6 @@
 describe ZATCA::Tag do
   let(:tag) { ZATCA::Tag.new(key: :seller_name, value: "Mrsool") }
+  let(:unicode_tag) { ZATCA::Tag.new(key: :seller_name, value: "مرسول") }
 
   describe "#id" do
     it "gets mapped from seller_name to 1" do
@@ -31,7 +32,13 @@ describe ZATCA::Tag do
 
   describe "#to_tlv" do
     it "generates a valid TLV" do
-      expect(tag.to_tlv).to eq("0106Mrsool")
+      expect(tag.to_tlv).to eq("\x01\x06Mrsool")
+    end
+
+    it "generates a valid TLV when passed unicode input" do
+      expected_output = "\x01\x05\xD9\x85\xD8\xB1\xD8\xB3\xD9\x88\xD9\x84".force_encoding("ASCII-8BIT")
+
+      expect(unicode_tag.to_tlv).to eq(expected_output)
     end
   end
 end
