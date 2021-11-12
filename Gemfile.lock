@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    zatca (0.1.0)
+    zatca (0.1.1)
       dry-schema (~> 1.5)
       rqrcode (~> 2.1.0)
       zeitwerk (~> 2.4)
@@ -97,4 +97,4 @@ DEPENDENCIES
   zatca!
 
 BUNDLED WITH
-   2.2.27
+   2.2.30
