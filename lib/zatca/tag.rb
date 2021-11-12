@@ -22,10 +22,13 @@ module ZATCA
 
     def to_tlv
       # TLV should be concatenated together without any separator in the following
-      # format: hex_value_of_id hex_value_of_length value_itself
-      # where hex_values should be padded with a 0 if containing only a single digit.
+      # format: character_value_of_id character_value_of_value_length value_itself
+      # All of this should be in 8-bit ASCII.
+      tlv = @id.chr + @value.length.chr + value
 
-      sprintf("%02X%02X%s", @id, @value.length, @value)
+      # We need to use force_encoding because encode will raise errors when
+      # trying to encode a string with utf-8 characters.
+      tlv.force_encoding("ASCII-8BIT")
     end
   end
 end
