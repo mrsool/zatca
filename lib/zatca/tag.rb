@@ -24,7 +24,7 @@ module ZATCA
       # TLV should be concatenated together without any separator in the following
       # format: character_value_of_id character_value_of_value_length value_itself
       # All of this should be in 8-bit ASCII.
-      tlv = @id.chr + @value.length.chr + value
+      tlv = @id.chr + @value.bytesize.chr + value
 
       # We need to use force_encoding because encode will raise errors when
       # trying to encode a string with utf-8 characters.
