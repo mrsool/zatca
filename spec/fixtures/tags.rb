@@ -6,7 +6,6 @@ FIXTURES_TAGS = {
   invoice_total: "115"
 }.freeze
 
-
 FIXTURES_UNICODE_TAGS = {
   seller_name: "مرسول",
   vat_registration_number: "310228833400003",
