@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary = "A library for generating QR Codes for the e-invoice standard by ZATCA in Saudi Arabia."
   spec.description = "A library for generating QR Codes for the e-invoice standard by ZATCA in Saudi Arabia."
   spec.homepage = "https://github.com/mrsool/zatca"
-  spec.required_ruby_version = ">= 2.4.0"
+  spec.required_ruby_version = ">= 2.5.0"
 
   spec.metadata["allowed_push_host"] = "https://rubygems.org"
 
@@ -34,12 +34,15 @@ Gem::Specification.new do |spec|
   spec.add_dependency "zeitwerk", "~> 2.4"
   spec.add_dependency "dry-schema", "~> 1.5"
   spec.add_dependency "rqrcode", "~> 2.1.0"
+  spec.add_dependency "httpx", "~> 0.21.0"
 
   # Development Dependencies
   spec.add_development_dependency "standard", "~> 1.3"
   spec.add_development_dependency "byebug", "~> 9.0"
   spec.add_development_dependency "rspec", "~> 3.10"
-
+  spec.add_development_dependency "vcr", "~> 6.0.0"
+  spec.add_development_dependency "webmock", "~> 3.18.1"
+  spec.add_development_dependency "amazing_print", "~> 1.4.0"
   # For more information and examples about making a new gem, checkout our
   # guide at: https://bundler.io/guides/creating_gem.html
 end
