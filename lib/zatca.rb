@@ -7,7 +7,9 @@ require "zeitwerk"
 loader = Zeitwerk::Loader.for_gem
 loader.inflector.inflect(
   "zatca" => "ZATCA",
-  "qr_code_generator" => "QRCodeGenerator"
+  "qr_code_generator" => "QRCodeGenerator",
+  "ubl" => "UBL",
+  "id" => "ID"
 )
 loader.setup
 
