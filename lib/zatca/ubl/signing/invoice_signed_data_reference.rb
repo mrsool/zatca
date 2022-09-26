@@ -37,7 +37,7 @@ class ZATCA::UBL::Signing::InvoiceSignedDataReference < ZATCA::UBL::BaseComponen
     [
       nested_transform_element(xpath: "not(//ancestor-or-self::ext:UBLExtensions)"),
       nested_transform_element(xpath: "not(//ancestor-or-self::cac:Signature)"),
-      nested_transform_element("not(//ancestor-or-self::cac:AdditionalDocumentReference[cbc:ID='QR'])"),
+      nested_transform_element(xpath: "not(//ancestor-or-self::cac:AdditionalDocumentReference[cbc:ID='QR'])"),
       ZATCA::UBL::BaseComponent.new(name: "ds:Transform", attributes: {"Algorithm" => "http://www.w3.org/2006/12/xml-c14n11"})
     ]
   end
