@@ -4,7 +4,7 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
     invoice_type_code_value:, invoice_counter_value:, previous_invoice_hash:,
     qr_code:, accounting_supplier_party:, accounting_customer_party:, delivery:,
     payment_means_code:, allowance_charges:, tax_totals:, legal_monetary_total:,
-    invoice_lines:, currency_code: "SAR"
+    invoice_lines:, currency_code: "SAR", line_count_numeric: nil
   )
     super()
 
@@ -32,6 +32,7 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
     @invoice_lines = invoice_lines
 
     @currency_code = currency_code
+    @line_count_numeric = line_count_numeric
 
     # Add sequential IDs to entities that need them
     add_sequential_ids_to_allowance_charges
@@ -73,6 +74,9 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
       # Currency codes
       ZATCA::UBL::BaseComponent.new(name: "cbc:DocumentCurrencyCode", value: @currency_code),
       ZATCA::UBL::BaseComponent.new(name: "cbc:TaxCurrencyCode", value: @currency_code),
+
+      # Line Count Numeric (Standard Invoice only)
+      line_count_numeric_element,
 
       # Additional document references
       # Invoice counter value (ICV)
@@ -152,6 +156,12 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
         )
       ])
     ])
+  end
+
+  def line_count_numeric_element
+    return nil if @line_count_numeric.blank?
+
+    ZATCA::UBL::BaseComponent.new(name: "cbc:LineCountNumeric", value: @line_count_numeric)
   end
 
   # Allowance charges must have sequential IDs, this method uses the array index
