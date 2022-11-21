@@ -42,7 +42,7 @@ class ZATCA::UBL::BaseComponent
 
     path_parts.each_with_index do |path_part, index|
       # byebug
-      next_path_part = path_parts[index + 1]
+      # next_path_part = path_parts[index + 1]
       # found_element = nested_element[path_part]
       # found_next_path_part = found_element[next_path_part]
 
