@@ -5,7 +5,7 @@ class ZATCA::UBL::CommonAggregateComponents::Item < ZATCA::UBL::BaseComponent
     super()
 
     @name = name
-    @classified_tax_category ||= ZATCA::UBL::CommonAggregateComponents::ClassifiedTaxCategory.new
+    @classified_tax_category = classified_tax_category || ZATCA::UBL::CommonAggregateComponents::ClassifiedTaxCategory.new
   end
 
   def name
