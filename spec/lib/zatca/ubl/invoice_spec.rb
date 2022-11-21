@@ -87,13 +87,6 @@ describe ZATCA::UBL::Invoice do
           tax_percent: "15"
         )
       )
-
-      # ZATCA::UBL::CommonAggregateComponents::AllowanceCharge.new(
-      #   charge_indicator: false,
-      #   amount: 5,
-      #   allowance_charge_reason: "discount",
-      #   currency_id: "SAR"
-      # )
     ]
 
     tax_totals = [
@@ -122,7 +115,6 @@ describe ZATCA::UBL::Invoice do
 
     invoice_lines = [
       ZATCA::UBL::CommonAggregateComponents::InvoiceLine.new(
-        id: "1",
         invoiced_quantity: "44.000000",
         invoiced_quantity_unit_code: "PCE",
         line_extension_amount: "966.00",
@@ -177,7 +169,7 @@ describe ZATCA::UBL::Invoice do
       builder = ZATCA::UBL::Builder.new(element: invoice)
       xml = builder.build
 
-      zatca_xml = read_xml_fixture("simplified-invoice-signed.xml")
+      zatca_xml = read_xml_fixture("simplified_invoice_signed.xml")
 
       expect(xml).to eq(zatca_xml)
     end
