@@ -6,15 +6,20 @@ class ZATCA::UBL::CommonAggregateComponents::PartyIdentification < ZATCA::UBL::B
     required(:scheme_id).filled(:string)
   end
 
-  def initialize(id:, scheme_id: "NAT")
+  def initialize(id:, scheme_id: "CRN")
     super()
 
     @id = id
     @scheme_id = scheme_id
+  end
 
-    @name = "cac:PartyIdentification"
-    @elements = [
-      ZATCA::UBL::CommonAggregateComponents::ID.new(id: @id, scheme_id: @scheme_id)
+  def name
+    "cac:PartyIdentification"
+  end
+
+  def elements
+    [
+      ZATCA::UBL::BaseComponent.new(name: "cbc:ID", value: @id, attributes: {"schemeID" => @scheme_id})
     ]
   end
 end

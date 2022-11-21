@@ -2,6 +2,7 @@
 
 require_relative "zatca/version"
 
+require "active_support"
 require "zeitwerk"
 
 loader = Zeitwerk::Loader.for_gem

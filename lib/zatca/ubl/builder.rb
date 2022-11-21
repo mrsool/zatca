@@ -5,7 +5,7 @@ class ZATCA::UBL::Builder
 
   def build
     builder = Nokogiri::XML::Builder.new(encoding: "UTF-8") do |xml|
-      xml.root { @element.build_xml(xml) }
+      @element.build_xml(xml)
     end
 
     builder.to_xml
