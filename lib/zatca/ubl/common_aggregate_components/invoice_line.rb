@@ -36,7 +36,7 @@ class ZATCA::UBL::CommonAggregateComponents::InvoiceLine < ZATCA::UBL::BaseCompo
     super()
 
     @id = id
-    @invoiced_quantity = sprintf("%.6f", invoiced_quantity.to_f)
+    @invoiced_quantity = invoiced_quantity
     @invoiced_quantity_unit_code = invoiced_quantity_unit_code
     @line_extension_amount = line_extension_amount
     @tax_total = tax_total
