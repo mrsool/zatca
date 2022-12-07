@@ -11,7 +11,7 @@
             <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="signature">
               <ds:SignedInfo>
                 <ds:CanonicalizationMethod Algorithm="http://www.w3.org/2006/12/xml-c14n11"/>
-                <ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+                <ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256"/>
                 <ds:Reference Id="invoiceSignedData" URI="">
                   <ds:Transforms>
                     <ds:Transform Algorithm="http://www.w3.org/TR/1999/REC-xpath-19991116">
@@ -33,7 +33,7 @@
                   <ds:DigestValue>M2ZkZWViYTg3OGYwNGQ3ZjhkOGJiNWUyZjlhODViMTc1YTg0MmE4MDFmNjU1MWJhYmYyYWFlMDc4MjRmMGVlOQ==</ds:DigestValue>
                 </ds:Reference>
               </ds:SignedInfo>
-              <ds:SignatureValue></ds:SignatureValue>
+              <ds:SignatureValue/>
               <ds:KeyInfo>
                 <ds:X509Data>
                   <ds:X509Certificate>MIID3DCCA4KgAwIBAgITbwAAZIQwd/uzGGbr+QABAABkhDAKBggqhkjOPQQDAjBjMRUwEwYKCZImiZPyLGQBGRYFbG9jYWwxEzARBgoJkiaJk/IsZAEZFgNnb3YxFzAVBgoJkiaJk/IsZAEZFgdleHRnYXp0MRwwGgYDVQQDExNUU1pFSU5WT0lDRS1TdWJDQS0xMB4XDTIyMDMxNTA4MjkwNVoXDTIyMDMxNzA4MjkwNVowTzELMAkGA1UEBhMCU0ExEzARBgNVBAoTCmhheWEgeWFnIDMxFzAVBgNVBAsTDmFtbWFuIEJyYW5jaGNoMRIwEAYDVQQDEwkxMjcuMC4wLjEwVjAQBgcqhkjOPQIBBgUrgQQACgNCAATTAK9lrTVko9rkq6ZYcc9HDRZP4b9S4zA4Km7YXJ+snTVhLkzU0HsmSX9Un8jDhRTOHDKaft8C/uuUY934vuMNo4ICKjCCAiYwgYsGA1UdEQSBgzCBgKR+MHwxHTAbBgNVBAQMFDEtaGF5YXwyLTIzNHwzLTcxMTExMR8wHQYKCZImiZPyLGQBAQwPMzAwMDU1MTg0NDAwMDAzMQ0wCwYDVQQMDAQxMTExMREwDwYDVQQaDAhaYXRjYSAxMjEYMBYGA1UEDwwPRm9vZCBCdXNzaW5lc3MzMB0GA1UdDgQWBBSgmIWD6bPfbbKkmTwOJRXvIbH9HjAfBgNVHSMEGDAWgBR2YIz7BqCsZ1c1nc+arKcrmTW1LzBOBgNVHR8ERzBFMEOgQaA/hj1odHRwOi8vdHN0Y3JsLnphdGNhLmdvdi5zYS9DZXJ0RW5yb2xsL1RTWkVJTlZPSUNFLVN1YkNBLTEuY3JsMIGtBggrBgEFBQcBAQSBoDCBnTBuBggrBgEFBQcwAYZiaHR0cDovL3RzdGNybC56YXRjYS5nb3Yuc2EvQ2VydEVucm9sbC9UU1pFaW52b2ljZVNDQTEuZXh0Z2F6dC5nb3YubG9jYWxfVFNaRUlOVk9JQ0UtU3ViQ0EtMSgxKS5jcnQwKwYIKwYBBQUHMAGGH2h0dHA6Ly90c3RjcmwuemF0Y2EuZ292LnNhL29jc3AwDgYDVR0PAQH/BAQDAgeAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDAzAnBgkrBgEEAYI3FQoEGjAYMAoGCCsGAQUFBwMCMAoGCCsGAQUFBwMDMAoGCCqGSM49BAMCA0gAMEUCIARehvaSyyUUyKpOrF/loNYHOWypNKttFPpUIm4dLwyaAiEAiNlHW6XNGo3sETvQxqVF4bx5AAw14BmXiYic1ZrtAOM=</ds:X509Certificate>
@@ -162,10 +162,10 @@
       <cbc:TaxableAmount currencyID="SAR">900.00</cbc:TaxableAmount>
       <cbc:TaxAmount currencyID="SAR">135.00</cbc:TaxAmount>
       <cac:TaxCategory>
-        <cbc:ID>S</cbc:ID>
+        <cbc:ID schemeAgencyID="6" schemeID="UN/ECE 5305">S</cbc:ID>
         <cbc:Percent>15</cbc:Percent>
         <cac:TaxScheme>
-          <cbc:ID>VAT</cbc:ID>
+          <cbc:ID schemeAgencyID="6" schemeID="UN/ECE 5153">VAT</cbc:ID>
         </cac:TaxScheme>
       </cac:TaxCategory>
     </cac:TaxSubtotal>

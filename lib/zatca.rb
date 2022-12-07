@@ -4,6 +4,8 @@ require_relative "zatca/version"
 
 require "active_support"
 require "zeitwerk"
+require "dry-initializer"
+require "dry-types"
 
 loader = Zeitwerk::Loader.for_gem
 loader.inflector.inflect(
@@ -22,6 +24,10 @@ module ZATCA
   extend self
 
   class Error < StandardError; end
+
+  module Types
+    include Dry.Types()
+  end
 
   def self.render_qr_code(tags)
     QRCodeGenerator.new(ZATCA::Tags.new(tags)).render

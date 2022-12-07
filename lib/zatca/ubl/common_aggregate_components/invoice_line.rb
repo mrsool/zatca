@@ -51,7 +51,7 @@ class ZATCA::UBL::CommonAggregateComponents::InvoiceLine < ZATCA::UBL::BaseCompo
 
   def elements
     [
-      ZATCA::UBL::BaseComponent.new(name: "cbc:ID", value: @index),
+      ZATCA::UBL::BaseComponent.new(name: "cbc:ID", value: index),
       ZATCA::UBL::BaseComponent.new(name: "cbc:InvoicedQuantity", value: @invoiced_quantity, attributes: {unitCode: @invoiced_quantity_unit_code}),
       ZATCA::UBL::BaseComponent.new(name: "cbc:LineExtensionAmount", value: @line_extension_amount, attributes: {currencyID: @currency_id}),
       @tax_total,

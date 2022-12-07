@@ -25,6 +25,10 @@ module ZATCA
       end.sort_by(&:id)
     end
 
+    def [](index)
+      @tags[index]
+    end
+
     def to_base64
       Base64.strict_encode64(to_tlv)
     end

@@ -13,10 +13,10 @@ module ZATCA
     required(:invoice_total).filled(:string)
     required(:vat_total).filled(:string)
 
-    # TODO: Data types required by 1 January 2023
-    # - Hash of XML Invoice
-    # - ECDSA signature
-    # - ECDSA public key
-    # - ECDSA signature of the cryptographic stamp’s public key by ZATCA’s technical CA
+    # Data types required for Phase 2 by 1 January 2023
+    required(:xml_invoice_hash).filled(:string)
+    required(:ecdsa_signature).filled(:string)
+    required(:ecdsa_public_key).filled(:string)
+    optional(:ecdsa_stamp_signature).filled(:string)
   end
 end

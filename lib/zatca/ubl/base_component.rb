@@ -1,11 +1,6 @@
 class ZATCA::UBL::BaseComponent
+  extend Dry::Initializer
   attr_accessor :elements, :attributes, :name, :value, :index
-
-  SCHEMA = nil
-
-  def self.schema
-    self::SCHEMA
-  end
 
   # def self.guard_dig(obj)
   #   unless obj.respond_to?(:dig)
@@ -13,16 +8,26 @@ class ZATCA::UBL::BaseComponent
   #   end
   # end
 
-  def initialize(elements: [], attributes: {}, value: "", name: "", index: nil)
-    @elements = elements
-    @attributes = attributes
-    @value = value
-    @name = name
+  option :elements,
+    type: ZATCA::Types::Array.of(ZATCA::Types.Instance(ZATCA::UBL::BaseComponent)),
+    default: proc { [] },
+    optional: true
 
-    # HACK: Add a nil index property to be used for cases where we need
-    # sequential IDs, this list can be populated after the array is built
-    @index = index
-  end
+  option :attributes, type: ZATCA::Types::Strict::Hash, default: proc { {} }, optional: true
+  option :value, type: ZATCA::Types::Coercible::String, default: proc { "" }, optional: true
+  option :name, type: ZATCA::Types::Strict::String, default: proc { "" }, optional: true
+  option :index, type: ZATCA::Types::Coercible::Integer, default: proc { 0 }, optional: true
+
+  # def initialize(elements: [], attributes: {}, value: "", name: "", index: nil)
+  # @elements = elements
+  # @attributes = attributes
+  # @value = value
+  # @name = name
+
+  # # HACK: Add a nil index property to be used for cases where we need
+  # # sequential IDs, this list can be populated after the array is built
+  # @index = index
+  # end
 
   def [](name)
     elements.find { |element| element.name == name }
@@ -98,5 +103,13 @@ class ZATCA::UBL::BaseComponent
         xml.text(value)
       end
     end
+  end
+
+  def generate_xml
+    ZATCA::UBL::Builder.new(element: self).build
+  end
+
+  def generate_hash
+    ZATCA::Signing::Invoice.generate_base64_hash(generate_xml)
   end
 end

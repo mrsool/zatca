@@ -42,7 +42,7 @@ class ZATCA::UBL::CommonAggregateComponents::AllowanceCharge < ZATCA::UBL::BaseC
 
   def id_element
     if @add_id
-      ZATCA::UBL::BaseComponent.new(name: "cbc:ID", value: @index)
+      ZATCA::UBL::BaseComponent.new(name: "cbc:ID", value: index)
     end
   end
 

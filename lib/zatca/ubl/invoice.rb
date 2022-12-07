@@ -1,43 +1,45 @@
 class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
-  def initialize(
-    signature:, id:, uuid:, issue_date:, issue_time:, invoice_type_mask:,
-    invoice_type_code_value:, invoice_counter_value:, previous_invoice_hash:,
-    qr_code:, accounting_supplier_party:, accounting_customer_party:, delivery:,
-    payment_means_code:, allowance_charges:, tax_totals:, legal_monetary_total:,
-    invoice_lines:, currency_code: "SAR", line_count_numeric: nil
-  )
-    super()
+  option :id, type: Dry::Types["coercible.string"]
+  option :uuid, type: Dry::Types["coercible.string"]
+  option :issue_date, type: Dry::Types["coercible.string"]
+  option :issue_time, type: Dry::Types["coercible.string"]
+  option :invoice_type_mask, type: Dry::Types["coercible.string"]
+  option :currency_code, type: Dry::Types["coercible.string"], default: proc { "SAR" }
+  option :line_count_numeric, type: Dry::Types["coercible.string"], optional: true
+  option :qr_code, type: Dry::Types["coercible.string"].optional, optional: true, default: proc {}
+  option :payment_means_code, type: Dry::Types["coercible.string"]
 
-    @signature = signature
-    @id = id
-    @uuid = uuid
-    @issue_date = issue_date
-    @issue_time = issue_time
-    @invoice_type_mask = invoice_type_mask
-    @invoice_type_code_value = invoice_type_code_value
+  option :invoice_type_code_value, type: Dry::Types["coercible.string"]
+  option :invoice_counter_value, type: Dry::Types["coercible.string"]
+  option :previous_invoice_hash, type: Dry::Types["coercible.string"], optional: true
 
-    @invoice_counter_value = invoice_counter_value
-    @previous_invoice_hash = previous_invoice_hash
-    @qr_code = qr_code
+  option :accounting_supplier_party, type: ZATCA::Types.Instance(ZATCA::UBL::CommonAggregateComponents::Party)
+  option :accounting_customer_party, type: ZATCA::Types.Instance(ZATCA::UBL::CommonAggregateComponents::Party)
 
-    @accounting_supplier_party = accounting_supplier_party
-    @accounting_customer_party = accounting_customer_party
+  option :delivery,
+    type: ZATCA::Types.Instance(ZATCA::UBL::CommonAggregateComponents::Delivery),
+    optional: true
 
-    @delivery = delivery
-    @payment_means_code = payment_means_code
-    @allowance_charges = allowance_charges
-    @tax_totals = tax_totals
-    @legal_monetary_total = legal_monetary_total
+  option :allowance_charges,
+    type: ZATCA::Types::Array.of(ZATCA::Types.Instance(ZATCA::UBL::CommonAggregateComponents::AllowanceCharge)),
+    optional: true,
+    default: proc { [] }
 
-    @invoice_lines = invoice_lines
+  option :tax_totals,
+    type: ZATCA::Types::Array.of(ZATCA::Types.Instance(ZATCA::UBL::CommonAggregateComponents::TaxTotal)),
+    default: proc { [] }
 
-    @currency_code = currency_code
-    @line_count_numeric = line_count_numeric
+  option :legal_monetary_total, type: ZATCA::Types.Instance(ZATCA::UBL::CommonAggregateComponents::LegalMonetaryTotal)
 
-    # Add sequential IDs to entities that need them
-    add_sequential_ids_to_allowance_charges
-    add_sequential_ids_to_invoice_lines
-  end
+  option :invoice_lines,
+    type: ZATCA::Types::Array.of(ZATCA::Types.Instance(ZATCA::UBL::CommonAggregateComponents::InvoiceLine))
+
+  option :signature,
+    type: ZATCA::Types.Instance(ZATCA::UBL::Signing::Signature).optional,
+    optional: true,
+    default: proc {}
+
+  attr_accessor :signature, :qr_code
 
   def name
     "Invoice"
@@ -53,27 +55,29 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
   end
 
   def elements
+    add_sequential_ids
+
     [
       # Invoice signature
-      ZATCA::UBL::Signing::UBLExtensions.new(signature: @signature),
+      ubl_extensions_element,
 
       # Metadata
       ZATCA::UBL::BaseComponent.new(name: "cbc:ProfileID", value: "reporting:1.0"),
-      ZATCA::UBL::BaseComponent.new(name: "cbc:ID", value: @id),
-      ZATCA::UBL::BaseComponent.new(name: "cbc:UUID", value: @uuid),
-      ZATCA::UBL::BaseComponent.new(name: "cbc:IssueDate", value: @issue_date),
-      ZATCA::UBL::BaseComponent.new(name: "cbc:IssueTime", value: @issue_time),
+      ZATCA::UBL::BaseComponent.new(name: "cbc:ID", value: id),
+      ZATCA::UBL::BaseComponent.new(name: "cbc:UUID", value: uuid),
+      ZATCA::UBL::BaseComponent.new(name: "cbc:IssueDate", value: issue_date),
+      ZATCA::UBL::BaseComponent.new(name: "cbc:IssueTime", value: issue_time),
 
       # Invoice type
       ZATCA::UBL::BaseComponent.new(
         name: "cbc:InvoiceTypeCode",
-        attributes: {"name" => @invoice_type_mask},
-        value: @invoice_type_code_value
+        attributes: {"name" => invoice_type_mask},
+        value: invoice_type_code_value
       ),
 
       # Currency codes
-      ZATCA::UBL::BaseComponent.new(name: "cbc:DocumentCurrencyCode", value: @currency_code),
-      ZATCA::UBL::BaseComponent.new(name: "cbc:TaxCurrencyCode", value: @currency_code),
+      ZATCA::UBL::BaseComponent.new(name: "cbc:DocumentCurrencyCode", value: currency_code),
+      ZATCA::UBL::BaseComponent.new(name: "cbc:TaxCurrencyCode", value: currency_code),
 
       # Line Count Numeric (Standard Invoice only)
       line_count_numeric_element,
@@ -82,7 +86,7 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
       # Invoice counter value (ICV)
       ZATCA::UBL::BaseComponent.new(name: "cac:AdditionalDocumentReference", elements: [
         ZATCA::UBL::BaseComponent.new(name: "cbc:ID", value: "ICV"),
-        ZATCA::UBL::BaseComponent.new(name: "cbc:UUID", value: @invoice_counter_value)
+        ZATCA::UBL::BaseComponent.new(name: "cbc:UUID", value: invoice_counter_value)
       ]),
 
       # Previous invoice hash (PIH)
@@ -92,91 +96,133 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
       qr_code_document_reference,
 
       # Static: signature
-      ZATCA::UBL::BaseComponent.new(name: "cac:Signature", elements: [
-        ZATCA::UBL::BaseComponent.new(name: "cbc:ID", value: "urn:oasis:names:specification:ubl:signature:Invoice"),
-        ZATCA::UBL::BaseComponent.new(name: "cbc:SignatureMethod", value: "urn:oasis:names:specification:ubl:dsig:enveloped:xades")
-      ]),
+      static_signature_element,
 
       # AccountingSupplierParty
       ZATCA::UBL::BaseComponent.new(name: "cac:AccountingSupplierParty", elements: [
-        @accounting_supplier_party
+        accounting_supplier_party
       ]),
 
       # AccountingCustomerParty
       ZATCA::UBL::BaseComponent.new(name: "cac:AccountingCustomerParty", elements: [
-        @accounting_customer_party
+        accounting_customer_party
       ]),
 
       # Delivery
-      @delivery,
+      delivery,
 
       # PaymentMeans
       ZATCA::UBL::BaseComponent.new(name: "cac:PaymentMeans", elements: [
-        ZATCA::UBL::BaseComponent.new(name: "cbc:PaymentMeansCode", value: @payment_means_code)
+        ZATCA::UBL::BaseComponent.new(name: "cbc:PaymentMeansCode", value: payment_means_code)
       ]),
 
       # AllowanceCharges
       # TODO: Figure out how this ties to invoice lines
-      *@allowance_charges,
+      *allowance_charges,
 
       # TaxTotals
-      *@tax_totals,
+      *tax_totals,
 
       # LegalMonetaryTotal
-      @legal_monetary_total,
+      legal_monetary_total,
 
       # InvoiceLines
-      *@invoice_lines
+      *invoice_lines
     ]
+  end
+
+  def generate_hash
+    xml = generate_xml
+    xml
+      .gsub!("<cbc:ProfileID>", "\n<cbc:ProfileID>")
+      .gsub!("<cac:AccountingSupplierParty>", "\n    \n    <cac:AccountingSupplierParty>")
+
+    ZATCA::Signing::Invoice.generate_base64_hash(xml)
   end
 
   private
 
   def previous_invoice_hash_document_reference
+    return nil if previous_invoice_hash.nil?
+
     ZATCA::UBL::BaseComponent.new(name: "cac:AdditionalDocumentReference", elements: [
       ZATCA::UBL::BaseComponent.new(name: "cbc:ID", value: "PIH"),
       ZATCA::UBL::BaseComponent.new(name: "cac:Attachment", elements: [
         ZATCA::UBL::BaseComponent.new(
           name: "cbc:EmbeddedDocumentBinaryObject",
           attributes: {"mimeCode" => "text/plain"},
-          value: @previous_invoice_hash
+          value: previous_invoice_hash
         )
       ])
     ])
   end
 
   def qr_code_document_reference
+    return nil if qr_code.blank?
+
     ZATCA::UBL::BaseComponent.new(name: "cac:AdditionalDocumentReference", elements: [
       ZATCA::UBL::BaseComponent.new(name: "cbc:ID", value: "QR"),
       ZATCA::UBL::BaseComponent.new(name: "cac:Attachment", elements: [
         ZATCA::UBL::BaseComponent.new(
           name: "cbc:EmbeddedDocumentBinaryObject",
           attributes: {"mimeCode" => "text/plain"},
-          value: @qr_code
+          value: qr_code
         )
       ])
     ])
   end
 
   def line_count_numeric_element
-    return nil if @line_count_numeric.blank?
+    return nil if line_count_numeric.blank?
 
-    ZATCA::UBL::BaseComponent.new(name: "cbc:LineCountNumeric", value: @line_count_numeric)
+    ZATCA::UBL::BaseComponent.new(name: "cbc:LineCountNumeric", value: line_count_numeric)
+  end
+
+  def ubl_extensions_element
+    return nil if signature.blank?
+
+    ZATCA::UBL::Signing::UBLExtensions.new(signature: signature)
+  end
+
+  def static_signature_element
+    return nil if signature.blank?
+
+    ZATCA::UBL::BaseComponent.new(name: "cac:Signature", elements: [
+      ZATCA::UBL::BaseComponent.new(name: "cbc:ID", value: "urn:oasis:names:specification:ubl:signature:Invoice"),
+      ZATCA::UBL::BaseComponent.new(name: "cbc:SignatureMethod", value: "urn:oasis:names:specification:ubl:dsig:enveloped:xades")
+    ])
+  end
+
+  def add_sequential_ids
+    add_sequential_ids_to_allowance_charges
+    add_sequential_ids_to_invoice_lines
   end
 
   # Allowance charges must have sequential IDs, this method uses the array index
   # of each element to do that
   def add_sequential_ids_to_allowance_charges
-    @allowance_charges.each_with_index do |allowance_charge, index|
+    @_added_sequential_ids_to_allowance_charges ||= false
+
+    return if @_added_sequential_ids_to_allowance_charges
+
+    allowance_charges.each_with_index do |allowance_charge, index|
       allowance_charge.index = index + 1
     end
+
+    @_added_sequential_ids_to_allowance_charges = true
   end
 
   # Invoice lines must have sequential IDs, this method uses the array index
   # of each element to do that
   def add_sequential_ids_to_invoice_lines
-    @invoice_lines.each_with_index do |invoice_line, index|
+    @_added_sequential_ids_to_invoice_lines ||= false
+
+    return if @_added_sequential_ids_to_invoice_lines
+
+    invoice_lines.each_with_index do |invoice_line, index|
       invoice_line.index = index + 1
     end
+
+    @_added_sequential_ids_to_invoice_lines = true
   end
 end
