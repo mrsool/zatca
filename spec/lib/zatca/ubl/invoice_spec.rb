@@ -57,13 +57,13 @@ describe ZATCA::UBL::Invoice do
       tags = ZATCA::Tags.new({
         seller_name: "Ahmed Mohamed AL Ahmady",
         vat_registration_number: "301121971500003",
-        timestamp: "2022-08-10T17:44:09+03:00",
-        vat_total: "144.90",
+        timestamp: "2022-03-13T14:40:40Z",
+        vat_total: "144.9",
         invoice_total: "1108.90",
         xml_invoice_hash: invoice_hash,
         ecdsa_signature: signature,
-        ecdsa_public_key: parsed_certificate.public_key,
-        ecdsa_stamp_signature: parsed_certificate.hash
+        ecdsa_public_key: parsed_certificate.public_key_bytes,
+        ecdsa_stamp_signature: parsed_certificate.signature
       })
 
       invoice.qr_code = tags.to_base64

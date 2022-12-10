@@ -1,6 +1,7 @@
 class ZATCA::Signing::Certificate
   attr_accessor :serial_number, :issuer_name, :cert_content_without_headers,
-    :hash, :public_key, :signature, :unpacked_signature
+    :hash, :public_key, :public_key_without_headers, :signature,
+    :public_key_bytes, :unpacked_signature
 
   # Returns the certificate hashed with SHA256 then Base64 encoded
   def self.generate_base64_hash(base64_certificate)
@@ -22,6 +23,8 @@ class ZATCA::Signing::Certificate
     @cert_content_without_headers = nil
     @hash = nil
     @public_key = nil
+    @public_key_without_headers = nil
+    @public_key_bytes = nil
     @signature = nil
     @unpacked_signature = nil
 
@@ -35,7 +38,12 @@ class ZATCA::Signing::Certificate
   attr_reader :openssl_certificate
 
   def parse_certificate
-    @cert_content_without_headers = openssl_certificate.to_pem.gsub("-----BEGIN CERTIFICATE-----", "").gsub("-----END CERTIFICATE-----", "").delete("\n")
+    @cert_content_without_headers = openssl_certificate
+      .to_pem
+      .gsub("-----BEGIN CERTIFICATE-----", "")
+      .gsub("-----END CERTIFICATE-----", "")
+      .delete("\n")
+
     @hash = self.class.generate_base64_hash(cert_content_without_headers)
 
     # ZATCA expects the issuer name to have spaces after commas, the issue name
@@ -46,6 +54,11 @@ class ZATCA::Signing::Certificate
     @serial_number = openssl_certificate.serial.to_s
     @cert_content_without_headers = cert_content_without_headers
     @public_key = openssl_certificate.public_key.to_pem
+    @public_key_without_headers = @public_key
+      .gsub("-----BEGIN PUBLIC KEY-----", "")
+      .gsub("-----END PUBLIC KEY-----", "")
+      .delete("\n")
+    @public_key_bytes = Base64.strict_decode64(@public_key_without_headers)
 
     parse_signature
   end
