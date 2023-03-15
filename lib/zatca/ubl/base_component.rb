@@ -105,8 +105,8 @@ class ZATCA::UBL::BaseComponent
     end
   end
 
-  def generate_xml
-    ZATCA::UBL::Builder.new(element: self).build
+  def generate_xml(pretty: true)
+    ZATCA::UBL::Builder.new(element: self).build(pretty: pretty)
   end
 
   def generate_hash

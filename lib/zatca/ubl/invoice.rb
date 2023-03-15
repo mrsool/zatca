@@ -132,12 +132,25 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
   end
 
   def generate_hash
-    xml = generate_xml
-    xml
-      .gsub!("<cbc:ProfileID>", "\n<cbc:ProfileID>")
-      .gsub!("<cac:AccountingSupplierParty>", "\n    \n    <cac:AccountingSupplierParty>")
+    canonicalized_xml = generate_unsigned_xml(pretty: false)
 
-    ZATCA::Signing::Invoice.generate_base64_hash(xml)
+    ZATCA::Signing::Invoice.generate_base64_hash(canonicalized_xml)
+  end
+
+  def generate_unsigned_xml(pretty: false)
+    # HACK: Set signature and QR code to nil temporarily so they get removed
+    # from the XML before generating the hash.
+    original_signature = signature
+    original_qr_code = qr_code
+    self.signature = nil
+    self.qr_code = nil
+
+    unsigned_xml = generate_xml(pretty: pretty)
+
+    self.signature = original_signature
+    self.qr_code = original_qr_code
+
+    unsigned_xml
   end
 
   private
