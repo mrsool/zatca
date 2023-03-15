@@ -1,14 +1,35 @@
 
-FATOORA_HOME="${PWD}"
+export FATOORA_HOME="${PWD}"
 
-PATH=$PATH:$FATOORA_HOME/Apps/
-export PATH
-export FATOORA_HOME
+export PATH=$PATH:$FATOORA_HOME/Apps/
+#export PATH
+#export FATOORA_HOME
+
+
+
+touch ~/.zshrc
+touch ~/.bash-profile
+
+
 
 
 SDK_CONFIG="${PWD}/Configuration/config.json"
-#echo $SDK_CONFIG
-export SDK_CONFIG=$SDK_CONFIG
+
+
+# echo "export PATH=$PATH:$FATOORA_HOME/Apps/" >> ~/.bash-profile
+# echo "export FATOORA_HOME=${PWD}/Apps" >> ~/.bash-profile
+# echo "export SDK_CONFIG=$SDK_CONFIG" >> ~/.bash-profile
+
+# echo "export PATH=$PATH:$FATOORA_HOME/Apps/" >> ~/.zshrc
+# echo "export FATOORA_HOME=${PWD}/Apps" >> ~/.zshrc
+# echo "export SDK_CONFIG=$SDK_CONFIG" >> ~/.zshrc
+
+
+
+
+
+source ~/.bash-profile
+# source ~/.zshrc
 
 cd Configuration
 
