@@ -3,7 +3,7 @@
 
 A Ruby library for generating QR Codes for the e-invoice standard by ZATCA in Saudi Arabia.
 
-✅ Validated to have the same output as [ZATCA's SDK](https://zatca.gov.sa/en/E-Invoicing/SystemsDevelopers/ComplianceEnablementToolbox/Pages/DownloadSDK.aspx) as of 12 November 2021.
+✅ Validated to have the same output as [ZATCA's SDK](https://zatca.gov.sa/en/E-Invoicing/SystemsDevelopers/ComplianceEnablementToolbox/Pages/DownloadSDK.aspx) as of 15 November 2023.
 
 # Installation
 
@@ -19,6 +19,7 @@ bundle add zatca
 
 # Usage
 
+## Phase 1
 ```rb
 require "zatca"
 
@@ -51,3 +52,13 @@ tags = ZATCA::Tags.new({
 generator = ZATCA::QRCodeGenerator.new(tags)
 generator.render(size: 512)
 ```
+
+## Phase 2
+Documentation is still in progress, for now you can refer to the [invoice spec](spec/lib/zatca/ubl/invoice_spec.rb).
+
+There are unit tests that have been tested against ZATCA's SDK for the generated XML.
+
+Remaining work:
+- [API integration and tests](issues/11)
+- [Generate certificates and signing requests](issues/16)
+- Documentation
