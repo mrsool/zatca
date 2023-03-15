@@ -1,7 +1,6 @@
 class ZATCA::Signing::Encrypting
   def self.encrypt_with_ecdsa(content:, private_key: nil, private_key_path: nil)
     private_key = parse_private_key(key: private_key, key_path: private_key_path)
-    hash = OpenSSL::Digest.digest("SHA256", content)
     signature = private_key.dsa_sign_asn1(content)
 
     Base64.strict_encode64(signature)

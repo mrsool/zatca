@@ -2,7 +2,7 @@ describe ZATCA::UBL::Invoice do
   def clear_dynamic_values_from_xml(xml)
     xml.gsub(/<ds:DigestValue>.*<\/ds:DigestValue>/, "")
       .gsub(/<ds:SignatureValue>.*<\/ds:SignatureValue>/, "")
-      .gsub(/<cbc:EmbeddedDocumentBinaryObject mimeCode=\"text\/plain\">.*<\/cbc:EmbeddedDocumentBinaryObject>/, "")
+      .gsub(/<cbc:EmbeddedDocumentBinaryObject mimeCode="text\/plain">.*<\/cbc:EmbeddedDocumentBinaryObject>/, "")
   end
 
   context "simplified invoice" do
