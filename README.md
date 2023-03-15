@@ -59,6 +59,6 @@ Documentation is still in progress, for now you can refer to the [invoice spec](
 There are unit tests that have been tested against ZATCA's SDK for the generated XML.
 
 Remaining work:
-- [API integration and tests](issues/11)
-- [Generate certificates and signing requests](issues/16)
+- [API integration and tests](https://github.com/mrsool/zatca/issues/11)
+- [Generate certificates and signing requests](https://github.com/mrsool/zatca/issues/16)
 - Documentation
