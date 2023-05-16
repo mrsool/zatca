@@ -16,7 +16,7 @@ class ZATCA::UBL::BaseComponent
   option :attributes, type: ZATCA::Types::Strict::Hash, default: proc { {} }, optional: true
   option :value, type: ZATCA::Types::Coercible::String, default: proc { "" }, optional: true
   option :name, type: ZATCA::Types::Strict::String, default: proc { "" }, optional: true
-  option :index, type: ZATCA::Types::Coercible::Integer, default: proc { 0 }, optional: true
+  option :index, type: ZATCA::Types::Coercible::Integer.optional, default: proc {}, optional: true
 
   # def initialize(elements: [], attributes: {}, value: "", name: "", index: nil)
   # @elements = elements
