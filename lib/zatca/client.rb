@@ -144,7 +144,8 @@ class ZATCA::Client
   def default_headers
     {
       "Accept-Language" => @language,
-      "Content-Type" => "application/json"
+      "Content-Type" => "application/json",
+      "Accept-Version" => @version
     }
   end
 end
