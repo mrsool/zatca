@@ -10,14 +10,19 @@ class ZATCA::Client
   DEFAULT_API_VERSION = "V2".freeze
   LANGUAGES = %w[ar en].freeze
 
-  def initialize(username:, password:, language: "ar", version: DEFAULT_API_VERSION, base_url: PRODUCTION_BASE_URL)
+  def initialize(username:, password:, language: "ar", version: DEFAULT_API_VERSION, environment: :production)
     raise "Invalid language: #{language}, Please use one of: #{LANGUAGES}" unless LANGUAGES.include?(language)
 
     @username = username
     @password = password
-    @base_url = base_url
     @language = language
     @version = version
+
+    @base_url = if environment.to_sym == :production
+      PRODUCTION_BASE_URL
+    else
+      SANDBOX_BASE_URL
+    end
   end
 
   # Reporting API
