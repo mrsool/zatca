@@ -7,6 +7,8 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
 
   option :id, type: Dry::Types["coercible.string"]
   option :uuid, type: Dry::Types["coercible.string"]
+  option :note, type: Dry::Types["coercible.string"].optional, optional: true, default: proc {}
+  option :note_language_id, type: Dry::Types["coercible.string"].optional, optional: true, default: proc {}
   option :issue_date, type: Dry::Types["coercible.string"]
   option :issue_time, type: Dry::Types["coercible.string"]
   option :invoice_type_mask, type: Dry::Types["coercible.string"]
@@ -19,12 +21,18 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
   option :invoice_counter_value, type: Dry::Types["coercible.string"]
   option :previous_invoice_hash, type: Dry::Types["coercible.string"], optional: true
 
+  option :add_ids_to_allowance_charges,
+    type: Dry::Types["strict.bool"],
+    optional: true,
+    default: proc { true }
+
   option :accounting_supplier_party, type: ZATCA::Types.Instance(ZATCA::UBL::CommonAggregateComponents::Party)
   option :accounting_customer_party, type: ZATCA::Types.Instance(ZATCA::UBL::CommonAggregateComponents::Party)
 
   option :delivery,
-    type: ZATCA::Types.Instance(ZATCA::UBL::CommonAggregateComponents::Delivery),
-    optional: true
+    type: ZATCA::Types.Instance(ZATCA::UBL::CommonAggregateComponents::Delivery).optional,
+    optional: true,
+    default: proc {}
 
   option :allowance_charges,
     type: ZATCA::Types::Array.of(ZATCA::Types.Instance(ZATCA::UBL::CommonAggregateComponents::AllowanceCharge)),
@@ -80,6 +88,9 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
         attributes: {"name" => invoice_type_mask},
         value: invoice_type_code_value
       ),
+
+      # Note
+      note_element,
 
       # Currency codes
       ZATCA::UBL::BaseComponent.new(name: "cbc:DocumentCurrencyCode", value: currency_code),
@@ -161,6 +172,16 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
 
   private
 
+  def note_element
+    return nil if note.blank? && note_language_id.blank?
+
+    ZATCA::UBL::BaseComponent.new(
+      name: "cbc:Note",
+      attributes: {"languageID" => note_language_id},
+      value: note
+    )
+  end
+
   def previous_invoice_hash_document_reference
     return nil if previous_invoice_hash.nil?
 
@@ -217,9 +238,11 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
     add_sequential_ids_to_invoice_lines
   end
 
-  # Allowance charges must have sequential IDs, this method uses the array index
-  # of each element to do that
+  # Allowance charges might need to have sequential IDs, this method uses the
+  # array index of each element to do that.
   def add_sequential_ids_to_allowance_charges
+    return unless add_ids_to_allowance_charges
+
     @_added_sequential_ids_to_allowance_charges ||= false
 
     return if @_added_sequential_ids_to_allowance_charges
@@ -232,7 +255,7 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
   end
 
   # Invoice lines must have sequential IDs, this method uses the array index
-  # of each element to do that
+  # of each element to do that.
   def add_sequential_ids_to_invoice_lines
     @_added_sequential_ids_to_invoice_lines ||= false
 
