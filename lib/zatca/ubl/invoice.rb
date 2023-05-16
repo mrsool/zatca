@@ -1,4 +1,10 @@
 class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
+  INVOICE_TYPE_CODES = {
+    invoice: "388",
+    debit: "383",
+    credit: "381"
+  }.freeze
+
   option :id, type: Dry::Types["coercible.string"]
   option :uuid, type: Dry::Types["coercible.string"]
   option :issue_date, type: Dry::Types["coercible.string"]
