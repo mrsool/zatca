@@ -29,6 +29,20 @@ class ZATCA::UBL::BaseComponent
   # @index = index
   # end
 
+  # There are cases where we end up constructing elements with no content
+  # and we don't want to include them in the final XML.
+  #
+  # This method helps us to return nil if the element has no attributes,
+  # elements or value.
+  #
+  # which is then caught in the `build_xml` method (using `elements.compact`)
+  # and ignored.
+  def self.build(elements: [], attributes: {}, value: "", name: "", index: nil)
+    return nil if elements.blank? && attributes.blank? && value.blank?
+
+    new(elements: elements, attributes: attributes, value: value, name: name, index: index)
+  end
+
   def [](name)
     elements.find { |element| element.name == name }
   end
