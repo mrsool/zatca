@@ -92,6 +92,9 @@ class ZATCA::Client
   end
 
   # Production CSID (Onboarding) API
+  # This endpoint gives you the Base64-encoded certificate back
+  # compliance_request_id is retrieved from the issue_csid request, and is
+  # in the response as responseID
   def issue_production_csid(compliance_request_id:)
     request(
       path: "production/csids",
