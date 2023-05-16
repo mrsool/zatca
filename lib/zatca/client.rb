@@ -53,15 +53,28 @@ class ZATCA::Client
   end
 
   # Compliance CSID API
+  # This should be used to obtain credentials to issue a certificate in the next
+  # request (issue_production_csid)
+  #
   # csid stands for Cryptographic Stamp Identifier
+  #
   # csr stands for Certificate Signing Request
-  # otp stands for One Time Password
+  #     You should generate this via the ZATCA::Signing::CSR class
+  #
+  # otp stands for One Time Password.
+  #     You can get this from the fatoora portal
+  # Returns:
+  # {
+  #   "binarySecurityToken": "string" # To be used as a username in next request
+  #   "secret": "string" # To be used as a password in next request
+  # }
   def issue_csid(csr:, otp:)
     request(
       path: "compliance",
       method: :post,
       body: {csr: csr},
-      headers: {"OTP" => otp}
+      headers: {"OTP" => otp},
+      authenticated: false
     )
   end
 
@@ -101,11 +114,16 @@ class ZATCA::Client
 
   private
 
-  def request(method:, path:, body: {}, headers: {})
+  def request(method:, path:, body: {}, headers: {}, authenticated: true)
     url = "#{@base_url}/#{path}"
     headers = default_headers.merge(headers)
 
-    client = HTTPX.plugin(:basic_authentication).basic_auth(@username, @password)
+    client = if authenticated
+      authenticated_request_cilent
+    else
+      unauthenticated_request_client
+    end
+
     response = client.send(method, url, json: body, headers: headers)
 
     if response.headers["Content-Type"] == "application/json"
@@ -113,6 +131,14 @@ class ZATCA::Client
     else
       response.body.to_s
     end
+  end
+
+  def authenticated_request_cilent
+    HTTPX.plugin(:basic_authentication).basic_auth(@username, @password)
+  end
+
+  def unauthenticated_request_client
+    HTTPX
   end
 
   def default_headers
