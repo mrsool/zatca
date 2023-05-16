@@ -13,7 +13,7 @@ class ZATCA::UBL::CommonAggregateComponents::PartyLegalEntity < ZATCA::UBL::Base
 
   def elements
     [
-      ZATCA::UBL::BaseComponent.new(name: "cbc:RegistrationName", value: @registration_name)
+      ZATCA::UBL::BaseComponent.build(name: "cbc:RegistrationName", value: @registration_name)
     ]
   end
 end

@@ -41,24 +41,18 @@ class ZATCA::UBL::CommonAggregateComponents::PostalAddress < ZATCA::UBL::BaseCom
     "cac:PostalAddress"
   end
 
-  def additional_street_name_element
-    if @additional_street_name.present?
-      ZATCA::UBL::BaseComponent.new(name: "cbc:AdditionalStreetName", value: @additional_street_name)
-    end
-  end
-
   def elements
     [
-      ZATCA::UBL::BaseComponent.new(name: "cbc:StreetName", value: @street_name),
-      additional_street_name_element,
-      ZATCA::UBL::BaseComponent.new(name: "cbc:BuildingNumber", value: @building_number),
-      ZATCA::UBL::BaseComponent.new(name: "cbc:PlotIdentification", value: @plot_identification),
-      ZATCA::UBL::BaseComponent.new(name: "cbc:CitySubdivisionName", value: @city_subdivision_name),
-      ZATCA::UBL::BaseComponent.new(name: "cbc:CityName", value: @city_name),
-      ZATCA::UBL::BaseComponent.new(name: "cbc:PostalZone", value: @postal_zone),
-      ZATCA::UBL::BaseComponent.new(name: "cbc:CountrySubentity", value: @country_subentity),
-      ZATCA::UBL::BaseComponent.new(name: "cac:Country", elements: [
-        ZATCA::UBL::BaseComponent.new(name: "cbc:IdentificationCode", value: @country_identification_code)
+      ZATCA::UBL::BaseComponent.build(name: "cbc:StreetName", value: @street_name),
+      ZATCA::UBL::BaseComponent.build(name: "cbc:AdditionalStreetName", value: @additional_street_name),
+      ZATCA::UBL::BaseComponent.build(name: "cbc:BuildingNumber", value: @building_number),
+      ZATCA::UBL::BaseComponent.build(name: "cbc:PlotIdentification", value: @plot_identification),
+      ZATCA::UBL::BaseComponent.build(name: "cbc:CitySubdivisionName", value: @city_subdivision_name),
+      ZATCA::UBL::BaseComponent.build(name: "cbc:CityName", value: @city_name),
+      ZATCA::UBL::BaseComponent.build(name: "cbc:PostalZone", value: @postal_zone),
+      ZATCA::UBL::BaseComponent.build(name: "cbc:CountrySubentity", value: @country_subentity),
+      ZATCA::UBL::BaseComponent.build(name: "cac:Country", elements: [
+        ZATCA::UBL::BaseComponent.build(name: "cbc:IdentificationCode", value: @country_identification_code)
       ])
     ]
   end
