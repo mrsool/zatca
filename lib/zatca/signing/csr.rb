@@ -81,7 +81,7 @@ class ZATCA::Signing::CSR
     {
       common_name: "",
       organization_identifier: "",
-      oragnization_name: "",
+      organization_name: "",
       organization_unit: "",
       country: "SA",
       invoice_type: "1100",
@@ -204,7 +204,7 @@ class ZATCA::Signing::CSR
       organizationalUnitName = #{csr_options[:organization_unit]}
 
       # Organization name (Tax payer name)
-      organizationName = #{csr_options[:oragnization_name]}
+      organizationName = #{csr_options[:organization_name]}
 
       # ISO2 country code is required with US as default
       countryName = #{csr_options[:country]}
