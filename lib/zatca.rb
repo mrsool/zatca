@@ -12,6 +12,7 @@ loader.inflector.inflect(
   "zatca" => "ZATCA",
   "qr_code_generator" => "QRCodeGenerator",
   "ubl" => "UBL",
+  "csr" => "CSR",
   "ubl_document_signature" => "UBLDocumentSignature",
   "ubl_document_signatures" => "UBLDocumentSignatures",
   "ubl_extension" => "UBLExtension",
