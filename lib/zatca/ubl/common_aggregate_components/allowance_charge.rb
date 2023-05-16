@@ -17,7 +17,7 @@ class ZATCA::UBL::CommonAggregateComponents::AllowanceCharge < ZATCA::UBL::BaseC
 
   def initialize(
     charge_indicator:, allowance_charge_reason:, amount:, currency_id: "SAR",
-    tax_category: nil, add_tax_category: true, add_id: true
+    tax_category: nil, add_tax_category: true, add_id: true, tax_categories: []
   )
     super()
 
@@ -34,6 +34,12 @@ class ZATCA::UBL::CommonAggregateComponents::AllowanceCharge < ZATCA::UBL::BaseC
     if add_tax_category && @tax_category.blank?
       @tax_category = ZATCA::UBL::CommonAggregateComponents::TaxCategory.new
     end
+
+    @tax_categories = if @tax_category.present? && tax_categories.blank?
+      [@tax_category]
+    else
+      tax_categories
+    end
   end
 
   def name
@@ -41,7 +47,7 @@ class ZATCA::UBL::CommonAggregateComponents::AllowanceCharge < ZATCA::UBL::BaseC
   end
 
   def id_element
-    if @add_id
+    if @add_id && index.present?
       ZATCA::UBL::BaseComponent.new(name: "cbc:ID", value: index)
     end
   end
@@ -52,7 +58,7 @@ class ZATCA::UBL::CommonAggregateComponents::AllowanceCharge < ZATCA::UBL::BaseC
       ZATCA::UBL::BaseComponent.new(name: "cbc:ChargeIndicator", value: @charge_indicator),
       ZATCA::UBL::BaseComponent.new(name: "cbc:AllowanceChargeReason", value: @allowance_charge_reason),
       ZATCA::UBL::BaseComponent.new(name: "cbc:Amount", value: @amount, attributes: {"currencyID" => @currency_id}),
-      @tax_category
+      *@tax_categories
     ]
   end
 end
