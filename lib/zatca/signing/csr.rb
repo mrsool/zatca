@@ -152,6 +152,8 @@ class ZATCA::Signing::CSR
     "1-#{csr_options[:egs_solution_name]}|2-#{csr_options[:egs_model]}|3-#{csr_options[:egs_serial_number]}"
   end
 
+  # Adapted from:
+  # https://github.com/wes4m/zatca-xml-js/blob/main/src/zatca/templates/csr_template.ts
   def generate_csr_config
     <<~TEMPLATE
       # ------------------------------------------------------------------
