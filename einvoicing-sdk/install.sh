@@ -16,19 +16,19 @@ touch ~/.bash-profile
 SDK_CONFIG="${PWD}/Configuration/config.json"
 
 
-# echo "export PATH=$PATH:$FATOORA_HOME/Apps/" >> ~/.bash-profile
-# echo "export FATOORA_HOME=${PWD}/Apps" >> ~/.bash-profile
-# echo "export SDK_CONFIG=$SDK_CONFIG" >> ~/.bash-profile
+echo "export PATH=$PATH:$FATOORA_HOME/Apps/" >> ~/.bash-profile
+echo "export FATOORA_HOME=${PWD}/Apps" >> ~/.bash-profile
+echo "export SDK_CONFIG=$SDK_CONFIG" >> ~/.bash-profile
 
-# echo "export PATH=$PATH:$FATOORA_HOME/Apps/" >> ~/.zshrc
-# echo "export FATOORA_HOME=${PWD}/Apps" >> ~/.zshrc
-# echo "export SDK_CONFIG=$SDK_CONFIG" >> ~/.zshrc
-
-
+echo "export PATH=$PATH:$FATOORA_HOME/Apps/" >> ~/.zshrc
+echo "export FATOORA_HOME=${PWD}/Apps" >> ~/.zshrc
+echo "export SDK_CONFIG=$SDK_CONFIG" >> ~/.zshrc
 
 
 
-source ~/.bash-profile
+
+# Commented out to avoid making errors in Container
+# source ~/.bash-profile
 # source ~/.zshrc
 
 cd Configuration
