@@ -1,16 +1,16 @@
 class ZATCA::Signing::CSR
-  attr_reader :key, :csr_options, :production_mode
+  attr_reader :key, :csr_options, :mode
 
   # For security purposes, please provide your own private key.
   # If you don't provide one, a new unsecure one will be generated for testing purposes.
   def initialize(
     csr_options:,
-    production_mode: true,
+    mode: :production,
     private_key_path: nil,
     private_key_password: nil
   )
     @csr_options = default_csr_options.merge(csr_options)
-    @production_mode = production_mode
+    @mode = mode.to_sym
     @private_key_path = private_key_path
     @private_key_password = private_key_password
     @generated_private_key_path = nil
@@ -127,7 +127,13 @@ class ZATCA::Signing::CSR
   end
 
   def cert_environment
-    production_mode ? "ZATCA-Code-Signing" : "TSTZATCA-Code-Signing"
+    case mode
+    when :production
+      "ZATCA-Code-Signing"
+    when :simulation
+      "PREZATCA-Code-Signing"
+    when :sandbox
+      "TSTZATCA-Code-Signing"
   end
 
   def generate_openssl_csr_command
@@ -178,7 +184,7 @@ class ZATCA::Signing::CSR
       #basicConstraints=CA:FALSE
       #keyUsage = digitalSignature, keyEncipherment
       # Production or Testing Template (TSTZATCA-Code-Signing - ZATCA-Code-Signing)
-      1.3.6.1.4.1.311.20.2 = ASN1:UTF8String:#{cert_environment}
+      1.3.6.1.4.1.311.20.2 = ASN1:PRINTABLESTRING:#{cert_environment}
       subjectAltName=dirName:dir_sect
 
       [ dir_sect ]

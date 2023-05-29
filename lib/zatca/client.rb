@@ -3,9 +3,18 @@ require "httpx"
 # This wraps the API described here:
 # https://sandbox.zatca.gov.sa/IntegrationSandbox
 class ZATCA::Client
-  # TODO: Find production URL
-  PRODUCTION_BASE_URL = "https://gw-apic-gov.gazt.gov.sa/e-invoicing/developer-portal".freeze
+  # API URLs are not present in developer portal, they can only be found in a PDF
+  # called Fatoora Portal User Manual, here:
+  # https://zatca.gov.sa/en/E-Invoicing/Introduction/Guidelines/Documents/Fatoora%20portal%20user%20manual.pdf
+  PRODUCTION_BASE_URL = "https://gw-fatoora.zatca.gov.sa/e-invoicing/core".freeze
   SANDBOX_BASE_URL = "https://gw-apic-gov.gazt.gov.sa/e-invoicing/developer-portal".freeze
+  SIMULATION_BASE_URL = "https://gw-fatoora.zatca.gov.sa/e-invoicing/simulation".freeze
+
+  ENVIRONMENTS_TO_URLS_MAP = {
+    production: PRODUCTION_BASE_URL,
+    sandbox: SANDBOX_BASE_URL,
+    simulation: SIMULATION_BASE_URL
+  }.freeze
 
   DEFAULT_API_VERSION = "V2".freeze
   LANGUAGES = %w[ar en].freeze
@@ -18,11 +27,7 @@ class ZATCA::Client
     @language = language
     @version = version
 
-    @base_url = if environment.to_sym == :production
-      PRODUCTION_BASE_URL
-    else
-      SANDBOX_BASE_URL
-    end
+    @base_url = ENVIRONMENTS_TO_URLS_MAP[environment.to_sym] || PRODUCTION_BASE_URL
   end
 
   # Reporting API
