@@ -134,6 +134,7 @@ class ZATCA::Signing::CSR
       "PREZATCA-Code-Signing"
     when :sandbox
       "TSTZATCA-Code-Signing"
+    end
   end
 
   def generate_openssl_csr_command
