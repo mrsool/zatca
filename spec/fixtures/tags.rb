@@ -6,7 +6,6 @@ FIXTURES_XML_TAGS = {
   ecdsa_stamp_signature: "0F\x02!\x00\xEEa\xD3\xEB(<\xE6;P\x19jw3\xBBOO\xB2d\xDB\xEC\xEC\xBDQ\xC6\xB3v\xD4\xE5\x9E\xD8\x13\xAF\x02!\x00\xFA\xD1\xE6\xD0jf#b\xF7^nqc5\xFCx_\x87h\xA7\xB2\xEC\x10\x11B5+\vcB\x05i"
 }.freeze
 
-# Phase 1
 FIXTURES_TAGS = {
   seller_name: "Mrsool",
   vat_registration_number: "310228833400003",
@@ -16,7 +15,6 @@ FIXTURES_TAGS = {
   **FIXTURES_XML_TAGS
 }.freeze
 
-# Phase 1
 FIXTURES_UNICODE_TAGS = {
   seller_name: "مرسول",
   vat_registration_number: "310228833400003",

@@ -30,8 +30,15 @@ module ZATCA
     include Dry.Types()
   end
 
-  def self.render_qr_code(tags)
-    QRCodeGenerator.new(ZATCA::Tags.new(tags)).render
+  def self.render_qr_code(tags: nil, base64: nil)
+    if tags.present?
+      tags = ZATCA::Tags.new(tags) if tags.is_a?(Hash)
+      QRCodeGenerator.new(tags: tags).render
+    elsif base64.present?
+      QRCodeGenerator.new(base64: base64).render
+    else
+      raise ArgumentError, "Either tags or base64 must be provided"
+    end
   end
 end
 

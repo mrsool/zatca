@@ -2,8 +2,9 @@ require "rqrcode"
 
 module ZATCA
   class QRCodeGenerator
-    def initialize(tags)
+    def initialize(tags: nil, base64: nil)
       @tags = tags
+      @base64 = base64
     end
 
     def render(size: 256)
@@ -15,7 +16,13 @@ module ZATCA
     private
 
     def generate
-      RQRCode::QRCode.new(@tags.to_base64)
+      if @tags.present?
+        RQRCode::QRCode.new(@tags.to_base64)
+      elsif @base64.present?
+        RQRCode::QRCode.new(@base64)
+      else
+        raise ArgumentError, "Either tags or base64 must be provided"
+      end
     end
   end
 end
