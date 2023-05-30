@@ -142,7 +142,7 @@ class ZATCA::Signing::CSR
   end
 
   def write_csr_config
-    @csr_config_path = "./#{SecureRandom.uuid}.conf}"
+    @csr_config_path = "./#{SecureRandom.uuid}.conf"
     File.write(@csr_config_path, generate_csr_config)
   end
 
