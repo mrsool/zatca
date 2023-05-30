@@ -154,6 +154,10 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
     ZATCA::Signing::Invoice.generate_base64_hash(canonicalized_xml)
   end
 
+  def to_base64(pretty: false)
+    Base64.strict_encode64(generate_xml(pretty: pretty))
+  end
+
   def generate_unsigned_xml(pretty: false)
     # HACK: Set signature and QR code to nil temporarily so they get removed
     # from the XML before generating the hash.
