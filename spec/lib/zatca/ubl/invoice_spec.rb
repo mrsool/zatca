@@ -15,6 +15,8 @@ describe ZATCA::UBL::Invoice do
 
     it "should be able to create an unsigned invoice qr-less invoice then add them later" do
       invoice = construct_unsigned_simplified_invoice
+
+      # TODO: Remove these once done testing
       File.write("TEST_ME_WITH_ZATCA_UNSIGNED.xml", invoice.generate_xml(pretty: false))
 
       # Hash the invoice
@@ -85,9 +87,10 @@ describe ZATCA::UBL::Invoice do
       zatca_xml = read_xml_fixture("simplified_invoice_signed.xml")
 
       generated_xml = invoice.generate_xml(pretty: true)
-      File.write("TEST_ME_WITH_ZATCA.xml", generated_xml)
 
-      File.write("TEST_ME_WITH_ZATCA_BASE64.txt", "#{invoice.to_base64}")
+      # TODO: Remove these once done testing
+      File.write("TEST_ME_WITH_ZATCA.xml", generated_xml)
+      File.write("TEST_ME_WITH_ZATCA_BASE64.txt", invoice.to_base64)
 
       # Remove values that can be different  due to timestamps/signing.
       # These values are supposed to have changing values on every run so
