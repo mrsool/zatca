@@ -95,7 +95,7 @@ class ZATCA::Signing::CSR
 
   def set_key
     if private_key_provided? && @key.blank?
-      @key = OpenSSL::PKey::RSA.new(
+      @key = OpenSSL::PKey::EC.new(
         File.read(@private_key_path),
         @private_key_password
       )
