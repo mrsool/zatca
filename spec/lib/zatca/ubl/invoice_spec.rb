@@ -26,48 +26,17 @@ describe ZATCA::UBL::Invoice do
       zatca_invoice_hash = "JqnuZfvJkUonU25aMshBYbkpP3ICzSZxjMSnJ3rhkFs="
       expect(invoice_hash[:base64]).to eq(zatca_invoice_hash)
 
-      # Parse the private key
-      # We need to specifically decode the key because ZATCA's sample key is Base64 encoded
+      # Sign the invoice
       private_key_path = private_key_fixtures_path("private_key.pem")
-      private_key = ZATCA::Signing::Encrypting.parse_private_key(key_path: private_key_path, decode_from_base64: true)
-
-      # Sign the invoice hash using the private key
-      signature = ZATCA::Signing::Encrypting.encrypt_with_ecdsa(
-        content: invoice_hash[:hash], # Fix: Use the SHA-256 hash instead of the Base64 version
-        private_key: private_key
-      )
-
-      # signing_time = Time.now.utc.strftime("%Y-%m-%dT%H:%M:%SZ")
+      certificate_path = certificate_path("certificate.pem")
       signing_time = "2022-09-15T00:41:21Z"
 
-      # Parse and hash the certificate
-      certificate_path = certificate_path("certificate.pem")
-      parsed_certificate = ZATCA::Signing::Certificate.read_certificate(certificate_path)
-
-      # Hash signed properties
-      signed_properties = ZATCA::UBL::Signing::SignedProperties.new(
+      invoice.sign(
+        private_key_path: private_key_path,
+        certificate_path: certificate_path,
         signing_time: signing_time,
-        cert_digest_value: parsed_certificate.hash,
-        cert_issuer_name: parsed_certificate.issuer_name,
-        cert_serial_number: parsed_certificate.serial_number
+        decode_private_key_from_base64: true
       )
-
-      # Fix: Make sure we follow the same logic as invoice hash
-      signature_properties_digest = signed_properties.generate_hash
-
-      # Create the signature element using the certficiate, invoice hash, and signed properties hash
-      signature_element = ZATCA::UBL::Signing::Signature.new(
-        invoice_digest_value: invoice_hash[:base64],
-        signature_properties_digest: signature_properties_digest,
-        signature_value: signature,
-        certificate: parsed_certificate.cert_content_without_headers,
-        signing_time: signing_time,
-        cert_digest_value: parsed_certificate.hash,
-        cert_issuer_name: parsed_certificate.issuer_name,
-        cert_serial_number: parsed_certificate.serial_number
-      )
-
-      invoice.signature = signature_element
 
       # Create a QR Code
       tags = ZATCA::Tags.new({
@@ -77,9 +46,9 @@ describe ZATCA::UBL::Invoice do
         vat_total: "30.15",
         invoice_total: "231.15",
         xml_invoice_hash: invoice_hash[:base64],
-        ecdsa_signature: signature,
-        ecdsa_public_key: parsed_certificate.public_key_bytes,
-        ecdsa_stamp_signature: parsed_certificate.signature
+        ecdsa_signature: invoice.signed_hash,
+        ecdsa_public_key: invoice.certificate_public_key_bytes,
+        ecdsa_stamp_signature: invoice.certificate_signature
       })
 
       invoice.qr_code = tags.to_base64
