@@ -174,6 +174,51 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
     unsigned_xml
   end
 
+  def sign(private_key_path:, certificate_path:, signing_time: Time.now.utc.strftime("%Y-%m-%dT%H:%M:%SZ"))
+    # Returns a hash with the invoice's SHA-256 hash and the Base64 version of it
+    # in the format {hash: "SHA-256 hash", base64: "Base64 version of the hash"}
+    generated_hash = invoice.generate_hash
+
+    private_key = ZATCA::Signing::Encrypting.parse_private_key(
+      key_path: private_key_path,
+      decode_from_base64: false
+    )
+
+    # Sign the invoice hash using the private key
+    signed_invoice_hash = ZATCA::Signing::Encrypting.encrypt_with_ecdsa(
+      content: generated_hash[:hash],
+      private_key: private_key
+    )
+
+    # Parse and hash the certificate
+    parsed_certificate = ZATCA::Signing::Certificate.read_certificate(certificate_path)
+
+    # Hash signed properties
+    signed_properties = ZATCA::UBL::Signing::SignedProperties.new(
+      signing_time: signing_time,
+      cert_digest_value: parsed_certificate.hash,
+      cert_issuer_name: parsed_certificate.issuer_name,
+      cert_serial_number: parsed_certificate.serial_number
+    )
+
+    signature_properties_digest = signed_properties.generate_hash
+
+    # Create the signature element using the certficiate, invoice hash, and signed
+    # properties hash
+    signature_element = ZATCA::UBL::Signing::Signature.new(
+      invoice_digest_value: generated_hash[:base64],
+      signature_properties_digest: signature_properties_digest,
+      signature_value: signed_invoice_hash,
+      certificate: parsed_certificate.cert_content_without_headers,
+      signing_time: signing_time,
+      cert_digest_value: parsed_certificate.hash,
+      cert_issuer_name: parsed_certificate.issuer_name,
+      cert_serial_number: parsed_certificate.serial_number
+    )
+
+    self.signature = signature_element
+  end
+
   private
 
   def note_element
