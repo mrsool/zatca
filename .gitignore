@@ -8,3 +8,4 @@
 /tmp/
 /*.pem
 .byebug_history
+Gemfile.lock
