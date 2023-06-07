@@ -21,6 +21,3 @@ jobs:
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - name: Lint
       run: bundle exec standardrb
-
-    - name: Run tests
-      run: bundle exec rspec
