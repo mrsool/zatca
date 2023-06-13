@@ -1,4 +1,4 @@
-def construct_standard_invoice
+def construct_signed_standard_invoice
   signature = ZATCA::UBL::Signing::Signature.new(
     invoice_digest_value: "mfVCipyZPmHg1iSt+ybRbRLhP+xfnH5ffsLawdiu6PI=",
     signature_properties_digest: "M2ZkZWViYTg3OGYwNGQ3ZjhkOGJiNWUyZjlhODViMTc1YTg0MmE4MDFmNjU1MWJhYmYyYWFlMDc4MjRmMGVlOQ==",
@@ -153,6 +153,161 @@ def construct_standard_invoice
     invoice_counter_value: invoice_counter_value,
     previous_invoice_hash: previous_invoice_hash,
     qr_code: qr_code,
+    accounting_supplier_party: accounting_supplier_party,
+    accounting_customer_party: accounting_customer_party,
+    delivery: delivery,
+    payment_means_code: payment_means_code,
+    allowance_charges: allowance_charges,
+    tax_totals: tax_totals,
+    legal_monetary_total: legal_monetary_total,
+    invoice_lines: invoice_lines,
+    currency_code: currency_code
+  )
+end
+
+def construct_unsigned_standard_invoice
+  invoice_id = "SME00023"
+  invoice_uuid = "8d487816-70b8-4ade-a618-9d620b73814a"
+  issue_date = "2022-09-07"
+  issue_time = "12:21:28"
+  invoice_type_mask = "0100000"
+  invoice_type_code_value = "388"
+
+  invoice_counter_value = "23"
+  previous_invoice_hash = "NWZlY2ViNjZmZmM4NmYzOGQ5NTI3ODZjNmQ2OTZjNzljMmRiYzIzOWRkNGU5MWI0NjcyOWQ3M2EyN2ZiNTdlOQ=="
+
+  accounting_supplier_party = ZATCA::UBL::CommonAggregateComponents::Party.new(
+    party_identification: ZATCA::UBL::CommonAggregateComponents::PartyIdentification.new(
+      id: "311111111111113",
+      scheme_id: "CRN"
+    ),
+    postal_address: ZATCA::UBL::CommonAggregateComponents::PostalAddress.new(
+      street_name: "الامير سلطان",
+      building_number: "2322",
+      plot_identification: "2223",
+      city_subdivision_name: "الرياض",
+      city_name: "الرياض | Riyadh",
+      postal_zone: "23333",
+      country_identification_code: "SA",
+      country_subentity: nil
+    ),
+
+    party_tax_scheme: ZATCA::UBL::CommonAggregateComponents::PartyTaxScheme.new(
+      company_id: "311111111101113"
+    ),
+
+    party_legal_entity: ZATCA::UBL::CommonAggregateComponents::PartyLegalEntity.new(
+      registration_name: "Acme Widget’s LTD"
+    )
+  )
+
+  accounting_customer_party = ZATCA::UBL::CommonAggregateComponents::Party.new(
+    party_identification: ZATCA::UBL::CommonAggregateComponents::PartyIdentification.new(
+      id: "311111111111113",
+      scheme_id: "NAT"
+    ),
+    postal_address: ZATCA::UBL::CommonAggregateComponents::PostalAddress.new(
+      street_name: "الرياض",
+      building_number: "1111",
+      plot_identification: "2223",
+      city_subdivision_name: "الرياض",
+      city_name: "الدمام | Dammam",
+      postal_zone: "12222",
+      country_identification_code: "SA",
+      country_subentity: nil
+    ),
+
+    party_tax_scheme: ZATCA::UBL::CommonAggregateComponents::PartyTaxScheme.new,
+    party_legal_entity: ZATCA::UBL::CommonAggregateComponents::PartyLegalEntity.new(
+      registration_name: "Acme Widget’s LTD 2"
+    )
+  )
+
+  delivery = ZATCA::UBL::CommonAggregateComponents::Delivery.new(
+    actual_delivery_date: "2022-09-07"
+  )
+
+  payment_means_code = "10"
+
+  allowance_charges = [
+    ZATCA::UBL::CommonAggregateComponents::AllowanceCharge.new(
+      charge_indicator: false,
+      amount: "0.00",
+      allowance_charge_reason: "discount",
+      currency_id: "SAR",
+      add_id: false,
+      tax_categories: [
+        # Yes, ZATCA's official valid sample duplicates these, not sure why
+        ZATCA::UBL::CommonAggregateComponents::TaxCategory.new(
+          tax_percent: "15"
+        )
+      ]
+    )
+  ]
+
+  tax_totals = [
+    ZATCA::UBL::CommonAggregateComponents::TaxTotal.new(
+      tax_amount: "0.6"
+    ),
+
+    ZATCA::UBL::CommonAggregateComponents::TaxTotal.new(
+      tax_amount: "0.6",
+      tax_subtotal_amount: "0.60",
+      taxable_amount: "4.00",
+      tax_category: ZATCA::UBL::CommonAggregateComponents::TaxCategory.new(
+        tax_percent: "15.00"
+      )
+    )
+  ]
+
+  legal_monetary_total = ZATCA::UBL::CommonAggregateComponents::LegalMonetaryTotal.new(
+    line_extension_amount: "4.00",
+    tax_exclusive_amount: "4.00",
+    tax_inclusive_amount: "4.60",
+    allowance_total_amount: "0.00",
+    prepaid_amount: "0.00",
+    payable_amount: "4.60"
+  )
+
+  invoice_lines = [
+    ZATCA::UBL::CommonAggregateComponents::InvoiceLine.new(
+      invoiced_quantity: "2.000000",
+      invoiced_quantity_unit_code: "PCE",
+      line_extension_amount: "4.00",
+      tax_total: ZATCA::UBL::CommonAggregateComponents::TaxTotal.new(
+        tax_amount: "0.60",
+        rounding_amount: "4.60"
+      ),
+      item: ZATCA::UBL::CommonAggregateComponents::Item.new(
+        name: "قلم رصاص",
+        classified_tax_category: ZATCA::UBL::CommonAggregateComponents::ClassifiedTaxCategory.new(
+          percent: "15.00"
+        )
+      ),
+      price: ZATCA::UBL::CommonAggregateComponents::Price.new(
+        price_amount: "2.00",
+        allowance_charge: ZATCA::UBL::CommonAggregateComponents::AllowanceCharge.new(
+          charge_indicator: false,
+          allowance_charge_reason: "discount",
+          amount: "0.00",
+          add_tax_category: false,
+          add_id: false
+        )
+      )
+    )
+  ]
+
+  currency_code = "SAR"
+
+  ZATCA::UBL::Invoice.new(
+    id: invoice_id,
+    uuid: invoice_uuid,
+    issue_date: issue_date,
+    issue_time: issue_time,
+    invoice_type_mask: invoice_type_mask,
+    invoice_type_code_value: invoice_type_code_value,
+    invoice_counter_value: invoice_counter_value,
+    previous_invoice_hash: previous_invoice_hash,
     accounting_supplier_party: accounting_supplier_party,
     accounting_customer_party: accounting_customer_party,
     delivery: delivery,

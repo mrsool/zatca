@@ -96,9 +96,26 @@ describe ZATCA::UBL::Invoice do
     # <cac:TaxCategory>
     #        <cbc:ID schemeAgencyID="6" schemeID="UN/ECE 5305">S</cbc:ID>
     it "should generate xml that matches ZATCA's" do
-      invoice = construct_standard_invoice
+      invoice = construct_signed_standard_invoice
       zatca_xml = read_xml_fixture("standard_invoice.xml")
 
+      expect(invoice.generate_xml).to eq(zatca_xml)
+    end
+
+    it "should be able to generate an unsigned qr-less standard invoice" do
+      invoice = construct_unsigned_standard_invoice
+      zatca_xml = read_xml_fixture("standard_invoice_v2.xml")
+
+      # ZATCA expects us to "clear" unsigned invoices via the API,
+      # so before we compare let's remove all clearance-related elements such as
+      # signature, signed properties, UBL Extensions, and QR code from ZATCA's
+      # XML
+      zatca_xml = zatca_xml.gsub(/<ds:Signature>.*<\/ds:Signature>/m, "")
+        .gsub(/\s*<ext:UBLExtensions>.*<\/ext:UBLExtensions>/m, "")
+        .gsub(/\s*<cac:Signature>.*<\/cac:Signature>/m, "")
+        .gsub(/\s*<cac:AdditionalDocumentReference>\s*<cbc:ID>QR<\/cbc:ID>.*<\/cac:AdditionalDocumentReference>/m, "")
+
+      File.write("STANDARD_UNSIGNED_TEST_WITH_ZATCA.xml", invoice.generate_xml)
       expect(invoice.generate_xml).to eq(zatca_xml)
     end
   end
