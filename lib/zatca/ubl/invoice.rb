@@ -1,5 +1,5 @@
 class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
-  INVOICE_TYPE_CODES = {
+  TYPES = {
     invoice: "388",
     debit: "383",
     credit: "381"
@@ -22,13 +22,13 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
   option :note_language_id, type: Dry::Types["coercible.string"].optional, optional: true, default: proc {}
   option :issue_date, type: Dry::Types["coercible.string"]
   option :issue_time, type: Dry::Types["coercible.string"]
-  option :invoice_type_mask, type: Dry::Types["coercible.string"]
+  option :subtype, type: Dry::Types["coercible.string"]
   option :currency_code, type: Dry::Types["coercible.string"], default: proc { "SAR" }
   option :line_count_numeric, type: Dry::Types["coercible.string"], optional: true
   option :qr_code, type: Dry::Types["coercible.string"].optional, optional: true, default: proc {}
   option :payment_means_code, type: Dry::Types["coercible.string"]
 
-  option :invoice_type_code_value, type: Dry::Types["coercible.string"]
+  option :type, type: Dry::Types["coercible.string"]
   option :invoice_counter_value, type: Dry::Types["coercible.string"]
   option :previous_invoice_hash, type: Dry::Types["coercible.string"], optional: true
 
@@ -96,8 +96,8 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
       # Invoice type
       ZATCA::UBL::BaseComponent.new(
         name: "cbc:InvoiceTypeCode",
-        attributes: {"name" => invoice_type_mask},
-        value: invoice_type_code_value
+        attributes: {"name" => subtype},
+        value: type
       ),
 
       # Note
@@ -207,9 +207,16 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
     )
 
     # Parse and hash the certificate
+    # require "byebug"
     parsed_certificate = ZATCA::Signing::Certificate.read_certificate(certificate_path)
+    # byebug
     @certificate_public_key_bytes = parsed_certificate.public_key_bytes
+
+    # Current Version
     @certificate_signature = parsed_certificate.signature
+
+    # GPT4 Version
+    # @certificate_signature = parsed_certificate.signature_bytes
 
     # Hash signed properties
     signed_properties = ZATCA::UBL::Signing::SignedProperties.new(
@@ -226,7 +233,13 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
     signature_element = ZATCA::UBL::Signing::Signature.new(
       invoice_digest_value: generated_hash[:base64],
       signature_properties_digest: signature_properties_digest,
+
+      # Current Version
       signature_value: @signed_hash,
+
+      # GPT4 Version
+      # signature_value: @signed_hash[:base64],
+
       certificate: parsed_certificate.cert_content_without_headers,
       signing_time: signing_time,
       cert_digest_value: parsed_certificate.hash,

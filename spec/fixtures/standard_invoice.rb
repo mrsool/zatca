@@ -15,8 +15,8 @@ def construct_signed_standard_invoice
   line_count_numeric = "2"
   issue_date = "2021-04-25"
   issue_time = "15:30:00"
-  invoice_type_mask = "0100000"
-  invoice_type_code_value = "388"
+  invoice_subtype = "0100000"
+  invoice_type = "388"
 
   invoice_counter_value = "46531"
   previous_invoice_hash = "NWZlY2ViNjZmZmM4NmYzOGQ5NTI3ODZjNmQ2OTZjNzljMmRiYzIzOWRkNGU5MWI0NjcyOWQ3M2EyN2ZiNTdlOQ=="
@@ -147,9 +147,9 @@ def construct_signed_standard_invoice
     uuid: invoice_uuid,
     issue_date: issue_date,
     issue_time: issue_time,
-    invoice_type_mask: invoice_type_mask,
+    subtype: invoice_subtype,
+    type: invoice_type,
     line_count_numeric: line_count_numeric,
-    invoice_type_code_value: invoice_type_code_value,
     invoice_counter_value: invoice_counter_value,
     previous_invoice_hash: previous_invoice_hash,
     qr_code: qr_code,
@@ -170,8 +170,8 @@ def construct_unsigned_standard_invoice
   invoice_uuid = "8d487816-70b8-4ade-a618-9d620b73814a"
   issue_date = "2022-09-07"
   issue_time = "12:21:28"
-  invoice_type_mask = "0100000"
-  invoice_type_code_value = "388"
+  invoice_subtype = "0100000"
+  invoice_type = "388"
 
   invoice_counter_value = "23"
   previous_invoice_hash = "NWZlY2ViNjZmZmM4NmYzOGQ5NTI3ODZjNmQ2OTZjNzljMmRiYzIzOWRkNGU5MWI0NjcyOWQ3M2EyN2ZiNTdlOQ=="
@@ -304,8 +304,8 @@ def construct_unsigned_standard_invoice
     uuid: invoice_uuid,
     issue_date: issue_date,
     issue_time: issue_time,
-    invoice_type_mask: invoice_type_mask,
-    invoice_type_code_value: invoice_type_code_value,
+    subtype: invoice_subtype,
+    type: invoice_type,
     invoice_counter_value: invoice_counter_value,
     previous_invoice_hash: previous_invoice_hash,
     accounting_supplier_party: accounting_supplier_party,

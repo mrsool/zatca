@@ -5,8 +5,8 @@ NOTE = "ABC".freeze
 NOTE_LANGUAGE_ID = "ar".freeze
 ISSUE_DATE = "2022-08-17".freeze
 ISSUE_TIME = "17:41:08".freeze
-INVOICE_TYPE_MASK = "0200000".freeze
-INVOICE_TYPE_CODE_VALUE = "388".freeze
+INVOICE_SUBTYPE = "0200000".freeze
+INVOICE_TYPE = "388".freeze
 INVOICE_COUNTER_VALUE = "10".freeze
 PREVIOUS_INVOICE_HASH = "NWZlY2ViNjZmZmM4NmYzOGQ5NTI3ODZjNmQ2OTZjNzljMmRiYzIzOWRkNGU5MWI0NjcyOWQ3M2EyN2ZiNTdlOQ==".freeze
 
@@ -169,8 +169,8 @@ def make_invoice(signature: nil, qr_code: nil)
     uuid: INVOICE_UUID,
     issue_date: ISSUE_DATE,
     issue_time: ISSUE_TIME,
-    invoice_type_mask: INVOICE_TYPE_MASK,
-    invoice_type_code_value: INVOICE_TYPE_CODE_VALUE,
+    subtype: INVOICE_SUBTYPE,
+    type: INVOICE_TYPE,
     invoice_counter_value: INVOICE_COUNTER_VALUE,
     previous_invoice_hash: PREVIOUS_INVOICE_HASH,
     accounting_supplier_party: ACCOUNTING_SUPPLIER_PARTY,
