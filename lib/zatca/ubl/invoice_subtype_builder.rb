@@ -30,7 +30,7 @@ module ZATCA::UBL::InvoiceSubtypeBuilder
   #     summary: true,
   #     self_billed: false
   #   )
-  #   # => "0101110"
+  #   # => "0111110"
   #
   def build(
     simplified:,
