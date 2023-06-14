@@ -5,6 +5,13 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
     credit: "381"
   }.freeze
 
+  PAYMENT_MEANS = {
+    cash: "10",
+    credit: "30",
+    bank_account: "42",
+    bank_card: "48"
+  }.freeze
+
   attr_reader :signed_hash
   attr_reader :certificate_public_key_bytes
   attr_reader :certificate_signature
