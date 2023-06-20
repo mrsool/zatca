@@ -12,6 +12,14 @@ module ZATCA
       ecdsa_stamp_signature: 9
     }.freeze
 
+    PHASE_1_TAGS = [
+      :seller_name,
+      :vat_registration_number,
+      :timestamp,
+      :invoice_total,
+      :vat_total
+    ].freeze
+
     attr_accessor :id, :key, :value
 
     def initialize(key:, value:)
@@ -24,17 +32,13 @@ module ZATCA
       {id: @id, key: @key, value: @value}
     end
 
+    def should_be_utf8_encoded?
+      PHASE_1_TAGS.include?(key)
+    end
+
     def to_tlv
-      # TLV should be concatenated together without any separator in the following
-      # format: character_value_of_id character_value_of_value_length value_itself.
-      # ZATCA previously instructed that they require the value as 8-bit ASCII
-      # but as of Phase 2 they say they accept UTF-8. In fact the SDKs now throw
-      # errors if you pass values as 8-bit ASCII.
-
-      id_as_hex = [sprintf("%02X", @id)].pack("H*")
-      value_length_as_hex = [sprintf("%02X", @value.bytesize)].pack("H*")
-
-      [id_as_hex, value_length_as_hex, value].join
+      tlv = @id.chr + @value.bytesize.chr + @value
+      tlv.force_encoding("ASCII-8BIT")
     end
   end
 end
