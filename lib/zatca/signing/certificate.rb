@@ -64,6 +64,9 @@ class ZATCA::Signing::Certificate
     parse_signature
   end
 
+  # We'll disable the rule on endless ranges because they are not supported in
+  # older Ruby versions
+  # rubocop:disable Style/SlicingWithRange
   def parse_public_key_bytes
     # We call public_key twice to get the EC Point from the certificate
     public_key = openssl_certificate.public_key.public_key
