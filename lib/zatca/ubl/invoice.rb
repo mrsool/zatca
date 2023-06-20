@@ -213,7 +213,7 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
     @certificate_public_key_bytes = parsed_certificate.public_key_bytes
 
     # Current Version
-    @certificate_signature = parsed_certificate.signature
+    @certificate_signature = parsed_certificate.signature_bytes
 
     # GPT4 Version
     # @certificate_signature = parsed_certificate.signature_bytes
