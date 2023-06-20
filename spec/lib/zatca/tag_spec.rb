@@ -52,7 +52,7 @@ describe ZATCA::Tag do
     end
 
     it "generates a valid TLV when passed unicode input" do
-      expected_output = "\u0001\nمرسول"
+      expected_output = "\x01\n\xD9\x85\xD8\xB1\xD8\xB3\xD9\x88\xD9\x84".force_encoding("ASCII-8BIT")
 
       expect(unicode_tag.to_tlv).to eq(expected_output)
     end
