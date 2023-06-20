@@ -85,6 +85,7 @@ class ZATCA::Signing::Certificate
       ecdsa_public_key
     end
   end
+  # rubocop:enable Style/SlicingWithRange
 
   def parse_signature
     der = openssl_certificate.to_der
