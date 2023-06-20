@@ -1,9 +1,12 @@
 class ZATCA::Signing::Encrypting
   def self.encrypt_with_ecdsa(content:, private_key: nil, private_key_path: nil)
     private_key = parse_private_key(key: private_key, key_path: private_key_path)
-    signature = private_key.dsa_sign_asn1(content)
 
-    Base64.strict_encode64(signature)
+    signature = private_key.dsa_sign_asn1(content)
+    r, s = OpenSSL::ASN1.decode(signature).value.map(&:value)
+    ecdsa_signature = [r.to_s(2).rjust(32, "\x00"), s.to_s(2).rjust(32, "\x00")].join
+
+    Base64.strict_encode64(ecdsa_signature)
   end
 
   def self.read_private_key_from_file(path)
