@@ -14,9 +14,9 @@ module ZATCA
     required(:vat_total).filled(:string)
 
     # Data types required for Phase 2 by 1 January 2023
-    required(:xml_invoice_hash).filled(:string)
-    required(:ecdsa_signature).filled(:string)
-    required(:ecdsa_public_key).filled(:string)
+    optional(:xml_invoice_hash).filled(:string)
+    optional(:ecdsa_signature).filled(:string)
+    optional(:ecdsa_public_key).filled(:string)
     optional(:ecdsa_stamp_signature).filled(:string)
   end
 end
