@@ -38,6 +38,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "nokogiri", ">= 1.12"
   spec.add_dependency "activesupport", ">= 5.2"
   spec.add_dependency "dry-initializer", ">= 3.0"
+  spec.add_dependency "starkbank-ecdsa", "~> 2.0"
 
   # Development Dependencies
   spec.add_development_dependency "standard", "~> 1.3"

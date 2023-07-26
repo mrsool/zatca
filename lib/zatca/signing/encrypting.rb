@@ -1,21 +1,28 @@
+require "starkbank-ecdsa"
+
 class ZATCA::Signing::Encrypting
   def self.encrypt_with_ecdsa(content:, private_key: nil, private_key_path: nil)
     private_key = parse_private_key(key: private_key, key_path: private_key_path)
 
-    signature = private_key.dsa_sign_asn1(content)
-    r, s = OpenSSL::ASN1.decode(signature).value.map(&:value)
-    ecdsa_signature = [r.to_s(2).rjust(32, "\x00"), s.to_s(2).rjust(32, "\x00")].join
+    ecdsa_signature = EllipticCurve::Ecdsa.sign(content, private_key)
 
-    Base64.strict_encode64(ecdsa_signature)
+    ecdsa_signature.toBase64
   end
 
-  def self.read_private_key_from_file(path)
-    OpenSSL::PKey::EC.new(File.read(path))
+  def self.add_header_blocks(key_content)
+    # If key is missing header blocks, add them, otherwise return it as is
+    header = "-----BEGIN EC PRIVATE KEY-----"
+    footer = "-----END EC PRIVATE KEY-----"
+
+    unless key_content.include?(header) && key_content.include?(footer)
+      key_content = "#{header}\n#{key_content}\n#{footer}"
+    end
+
+    key_content
   end
 
-  def self.get_public_key_from_private_key(key:, key_path:)
-    private_key = parse_private_key(key: key, key_path: key_path)
-    private_key.public_key
+  def self.read_private_key_from_pem(pem)
+    EllipticCurve::PrivateKey.fromPem(add_header_blocks(pem))
   end
 
   # Returns a parsed private key
@@ -23,7 +30,7 @@ class ZATCA::Signing::Encrypting
   # before passing to OpenSSL to read it. # This is necessary because that's how
   # ZATCA's sample key is provided.
   def self.parse_private_key(key: nil, key_path: nil, decode_from_base64: false)
-    parsed_key = if key.is_a?(OpenSSL::PKey::EC)
+    parsed_key = if key.is_a?(EllipticCurve::PrivateKey)
       key
     elsif key.is_a?(String)
       key_content = if decode_from_base64
@@ -32,12 +39,12 @@ class ZATCA::Signing::Encrypting
         key
       end
 
-      OpenSSL::PKey::EC.new(key_content)
+      read_private_key_from_pem(key_content)
     elsif key_path.present?
       key_content = File.read(key_path)
       key_content = Base64.decode64(key_content) if decode_from_base64
 
-      OpenSSL::PKey::EC.new(key_content)
+      read_private_key_from_pem(key_content)
     end
 
     if parsed_key.blank?

@@ -35,7 +35,7 @@ describe ZATCA::UBL::Invoice do
         private_key_path: private_key_path,
         certificate_path: certificate_path,
         signing_time: signing_time,
-        decode_private_key_from_base64: true
+        decode_private_key_from_base64: false
       )
 
       # Create a QR Code
