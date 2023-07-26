@@ -27,6 +27,6 @@ class ZATCA::UBL::Signing::SignedProperties < ZATCA::UBL::BaseComponent
   def generate_hash
     canonicalized_xml = generate_xml(pretty: false)
 
-    ZATCA::Signing::Invoice.generate_base64_hash(canonicalized_xml)[:base64]
+    ZATCA::Signing::Invoice.generate_base64_hash(canonicalized_xml)
   end
 end

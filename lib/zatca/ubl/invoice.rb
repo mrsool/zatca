@@ -13,7 +13,8 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
   }.freeze
 
   attr_reader :signed_hash
-  attr_reader :certificate_public_key_bytes
+  attr_reader :signed_hash_bytes
+  attr_reader :public_key_bytes
   attr_reader :certificate_signature
 
   option :id, type: Dry::Types["coercible.string"]
@@ -195,22 +196,20 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
     # in the format {hash: "SHA-256 hash", base64: "Base64 version of the hash"}
     generated_hash = generate_hash
 
-    private_key = ZATCA::Signing::Encrypting.parse_private_key(
-      key_path: private_key_path,
+    # Sign the invoice hash using the private key
+    signature = ZATCA::Signing::ECDSA.sign(
+      content: generated_hash[:hash],
+      private_key_path: private_key_path,
       decode_from_base64: decode_private_key_from_base64
     )
 
-    # Sign the invoice hash using the private key
-    @signed_hash = ZATCA::Signing::Encrypting.encrypt_with_ecdsa(
-      content: generated_hash[:hash],
-      private_key: private_key
-    )
+    @signed_hash = signature[:base64]
+    @signed_hash_bytes = signature[:bytes]
+    @public_key_bytes = signature[:public_key_bytes]
 
     # Parse and hash the certificate
-    # require "byebug"
     parsed_certificate = ZATCA::Signing::Certificate.read_certificate(certificate_path)
-    # byebug
-    @certificate_public_key_bytes = parsed_certificate.public_key_bytes
+    # @public_key_bytes = parsed_certificate.public_key_bytes
 
     # Current Version
     @certificate_signature = parsed_certificate.signature_bytes
@@ -226,12 +225,12 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
       cert_serial_number: parsed_certificate.serial_number
     )
 
-    signature_properties_digest = signed_properties.generate_hash
+    signature_properties_digest = signed_properties.generate_hash[:hex_to_base64]
 
     # Create the signature element using the certficiate, invoice hash, and signed
     # properties hash
     signature_element = ZATCA::UBL::Signing::Signature.new(
-      invoice_digest_value: generated_hash[:base64],
+      invoice_digest_value: generated_hash[:hex_to_base64],
       signature_properties_digest: signature_properties_digest,
 
       # Current Version

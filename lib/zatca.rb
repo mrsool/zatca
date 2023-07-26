@@ -17,7 +17,8 @@ loader.inflector.inflect(
   "ubl_document_signatures" => "UBLDocumentSignatures",
   "ubl_extension" => "UBLExtension",
   "ubl_extensions" => "UBLExtensions",
-  "id" => "ID"
+  "id" => "ID",
+  "ecdsa" => "ECDSA"
 )
 loader.setup
 

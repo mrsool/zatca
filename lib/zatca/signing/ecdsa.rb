@@ -1,12 +1,16 @@
 require "starkbank-ecdsa"
 
-class ZATCA::Signing::Encrypting
-  def self.encrypt_with_ecdsa(content:, private_key: nil, private_key_path: nil)
-    private_key = parse_private_key(key: private_key, key_path: private_key_path)
+class ZATCA::Signing::ECDSA
+  def self.sign(content:, private_key: nil, private_key_path: nil, decode_from_base64: false)
+    private_key = parse_private_key(key: private_key, key_path: private_key_path, decode_from_base64: decode_from_base64)
 
     ecdsa_signature = EllipticCurve::Ecdsa.sign(content, private_key)
 
-    ecdsa_signature.toBase64
+    {
+      base64: ecdsa_signature.toBase64,
+      bytes: ecdsa_signature.toDer,
+      public_key_bytes: private_key.publicKey.toDer
+    }
   end
 
   def self.add_header_blocks(key_content)
