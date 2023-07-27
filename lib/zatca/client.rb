@@ -1,4 +1,5 @@
 require "httpx"
+require "json"
 
 # This wraps the API described here:
 # https://sandbox.zatca.gov.sa/IntegrationSandbox
@@ -139,10 +140,12 @@ class ZATCA::Client
 
     response = client.send(method, url, json: body, headers: headers)
 
+    response_body = response.body.to_s
+
     if response.headers["Content-Type"] == "application/json"
-      response.json
+      parse_json_or_return_string(response_body)
     else
-      response.body.to_s
+      response_body
     end
   end
 
@@ -160,5 +163,11 @@ class ZATCA::Client
       "Content-Type" => "application/json",
       "Accept-Version" => @version
     }
+  end
+
+  def parse_json_or_return_string(json)
+    JSON.parse(json)
+  rescue JSON::ParserError
+    json
   end
 end
