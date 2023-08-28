@@ -45,7 +45,7 @@ describe ZATCA::UBL::Invoice do
         timestamp: "2022-08-17T17:41:08Z",
         vat_total: "30.15",
         invoice_total: "231.15",
-        xml_invoice_hash: invoice_hash[:hex_to_base64],
+        xml_invoice_hash: invoice_hash[:hexdigest_base64],
         ecdsa_signature: invoice.signed_hash_bytes,
         ecdsa_public_key: invoice.public_key_bytes,
         ecdsa_stamp_signature: invoice.certificate_signature

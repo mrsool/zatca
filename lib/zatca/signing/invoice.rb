@@ -2,11 +2,12 @@ class ZATCA::Signing::Invoice
   # Returns the invoice hashed with SHA256 then Base64 encoded
   def self.generate_base64_hash(xml_invoice)
     sha256 = Digest::SHA256.digest(xml_invoice)
-    hex_to_base64 = [[sha256].pack("H*")].pack("m0")
+    sha256_hex = Digest::SHA256.hexdigest(xml_invoice)
 
     {
       base64: Base64.strict_encode64(sha256),
-      hex_to_base64: hex_to_base64,
+      hexdigest_base64: Base64.strict_encode64(sha256_hex),
+      hexdigest: sha256_hex,
       hash: sha256
     }
   end

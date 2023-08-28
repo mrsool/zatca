@@ -198,7 +198,7 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
 
     # Sign the invoice hash using the private key
     signature = ZATCA::Signing::ECDSA.sign(
-      content: generated_hash[:hash],
+      content: generated_hash[:hexdigest],
       private_key_path: private_key_path,
       decode_from_base64: decode_private_key_from_base64
     )
@@ -225,12 +225,12 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
       cert_serial_number: parsed_certificate.serial_number
     )
 
-    signature_properties_digest = signed_properties.generate_hash[:hex_to_base64]
+    signature_properties_digest = signed_properties.generate_hash[:hexdigest_base64]
 
     # Create the signature element using the certficiate, invoice hash, and signed
     # properties hash
     signature_element = ZATCA::UBL::Signing::Signature.new(
-      invoice_digest_value: generated_hash[:hex_to_base64],
+      invoice_digest_value: generated_hash[:base64],
       signature_properties_digest: signature_properties_digest,
 
       # Current Version
