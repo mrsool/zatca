@@ -205,11 +205,10 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
 
     @signed_hash = signature[:base64]
     @signed_hash_bytes = signature[:bytes]
-    @public_key_bytes = signature[:public_key_bytes]
 
     # Parse and hash the certificate
     parsed_certificate = ZATCA::Signing::Certificate.read_certificate(certificate_path)
-    # @public_key_bytes = parsed_certificate.public_key_bytes
+    @public_key_bytes = parsed_certificate.public_key_bytes
 
     # Current Version
     @certificate_signature = parsed_certificate.signature
