@@ -9,7 +9,7 @@ module ZATCA
       xml_invoice_hash: 6,
       ecdsa_signature: 7,
       ecdsa_public_key: 8,
-      ecdsa_stamp_signature: 9
+      ecdsa_stamp_signature: 9 # TODO: is this needed ?
     }.freeze
 
     PHASE_1_TAGS = [

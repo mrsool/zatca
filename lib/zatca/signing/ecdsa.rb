@@ -8,8 +8,7 @@ class ZATCA::Signing::ECDSA
 
     {
       base64: ecdsa_signature.toBase64,
-      bytes: ecdsa_signature.toDer,
-      public_key_bytes: private_key.publicKey.toDer
+      bytes: ecdsa_signature.toDer
     }
   end
 
