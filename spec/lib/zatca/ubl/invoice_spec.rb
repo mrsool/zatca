@@ -29,6 +29,7 @@ describe ZATCA::UBL::Invoice do
       # Sign the invoice
       private_key_path = private_key_fixtures_path("private_key.pem")
       certificate_path = certificate_path("certificate.pem")
+      invoice_timestamp = "#{invoice.issue_date}T#{invoice.issue_time}Z"
       signing_time = "2022-09-15T00:41:21Z"
 
       invoice.sign(
@@ -42,7 +43,7 @@ describe ZATCA::UBL::Invoice do
       tags = ZATCA::Tags.new({
         seller_name: "Acme Widgets LTD",
         vat_registration_number: "311111111101113",
-        timestamp: "2022-08-17T17:41:08Z",
+        timestamp: invoice_timestamp,
         vat_total: "30.15",
         invoice_total: "231.15",
         xml_invoice_hash: invoice_hash[:hexdigest_base64],
