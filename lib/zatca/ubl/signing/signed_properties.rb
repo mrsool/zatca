@@ -14,6 +14,7 @@ class ZATCA::UBL::Signing::SignedProperties < ZATCA::UBL::BaseComponent
 
   def attributes
     {
+      "xmlns:xades" => "http://uri.etsi.org/01903/v1.3.2#",
       "Id" => "xadesSignedProperties"
     }
   end

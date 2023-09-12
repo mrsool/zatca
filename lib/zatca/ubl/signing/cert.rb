@@ -34,8 +34,16 @@ class ZATCA::UBL::Signing::Cert < ZATCA::UBL::BaseComponent
         ZATCA::UBL::BaseComponent.new(name: "ds:DigestValue", value: @cert_digest_value, attributes: attributes_for_signing)
       ]),
       ZATCA::UBL::BaseComponent.new(name: "xades:IssuerSerial", elements: [
-        ZATCA::UBL::BaseComponent.new(name: "ds:X509IssuerName", value: @cert_issuer_name, attributes: attributes_for_signing),
-        ZATCA::UBL::BaseComponent.new(name: "ds:X509SerialNumber", value: @cert_serial_number, attributes: attributes_for_signing)
+        ZATCA::UBL::BaseComponent.new(
+          name: "ds:X509IssuerName",
+          value: @cert_issuer_name,
+          attributes: attributes_for_signing
+        ),
+        ZATCA::UBL::BaseComponent.new(
+          name: "ds:X509SerialNumber",
+          value: @cert_serial_number,
+          attributes: attributes_for_signing
+        )
       ])
     ]
   end
@@ -44,7 +52,7 @@ class ZATCA::UBL::Signing::Cert < ZATCA::UBL::BaseComponent
 
   def attributes_for_signing
     {
-      "xmlns:xades" => "http://uri.etsi.org/01903/v1.3.2#"
+      "xmlns:ds" => "http://www.w3.org/2000/09/xmldsig#"
     }
   end
 end
