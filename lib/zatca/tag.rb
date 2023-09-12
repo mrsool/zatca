@@ -7,8 +7,8 @@ module ZATCA
       invoice_total: 4,
       vat_total: 5,
       xml_invoice_hash: 6,
-      ecdsa_public_key: 7,
-      ecdsa_signature: 8,
+      ecdsa_signature: 7,
+      ecdsa_public_key: 8,
       ecdsa_stamp_signature: 9 # TODO: is this needed ?
     }.freeze
 

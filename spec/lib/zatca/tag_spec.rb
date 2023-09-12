@@ -27,12 +27,12 @@ describe ZATCA::Tag do
       expect(ZATCA::Tag.new(key: :xml_invoice_hash, value: "").id).to eq(6)
     end
 
-    it "gets mapped from ecdsa_public_key to 8" do
-      expect(ZATCA::Tag.new(key: :ecdsa_public_key, value: "").id).to eq(7)
-    end
-    
     it "gets mapped from ecdsa_signature to 7" do
-      expect(ZATCA::Tag.new(key: :ecdsa_signature, value: "").id).to eq(8)
+      expect(ZATCA::Tag.new(key: :ecdsa_signature, value: "").id).to eq(7)
+    end
+
+    it "gets mapped from ecdsa_public_key to 8" do
+      expect(ZATCA::Tag.new(key: :ecdsa_public_key, value: "").id).to eq(8)
     end
 
     it "gets mapped from ecdsa_stamp_signature to 9" do
