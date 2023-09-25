@@ -31,7 +31,7 @@ class ZATCA::UBL::Signing::Cert < ZATCA::UBL::BaseComponent
             "Algorithm" => "http://www.w3.org/2001/04/xmlenc#sha256"
           }
         ),
-        ZATCA::UBL::BaseComponent.new(name: "ds:DigestValue", value: @cert_digest_value, attributes: signing_attributes)
+        ZATCA::UBL::BaseComponent.new(name: "ds:DigestValue", value: @cert_digest_value)
       ]),
       ZATCA::UBL::BaseComponent.new(name: "xades:IssuerSerial", elements: [
         ZATCA::UBL::BaseComponent.new(

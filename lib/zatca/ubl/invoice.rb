@@ -228,7 +228,6 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
       cert_serial_number: parsed_certificate.serial_number
     )
 
-
     signed_properties_hash = signed_properties_for_hashing.generate_hash[:hexdigest_base64]
 
     # Create the signature element using the certficiate, invoice hash, and signed
