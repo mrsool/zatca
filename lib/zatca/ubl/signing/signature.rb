@@ -1,13 +1,13 @@
 class ZATCA::UBL::Signing::Signature < ZATCA::UBL::BaseComponent
   def initialize(
-    invoice_digest_value:, signature_properties_digest:, signature_value:,
+    invoice_hash:, signed_properties_hash:, signature_value:,
     certificate:, signing_time:, cert_digest_value:, cert_issuer_name:,
     cert_serial_number:
   )
     super()
 
-    @invoice_digest = invoice_digest_value
-    @signature_properties_digest = signature_properties_digest
+    @invoice_digest = invoice_hash
+    @signed_properties_hash = signed_properties_hash
     @signature_value = signature_value
     @certificate = certificate
     @signing_time = signing_time
@@ -31,7 +31,7 @@ class ZATCA::UBL::Signing::Signature < ZATCA::UBL::BaseComponent
     [
       ZATCA::UBL::Signing::SignedInfo.new(
         invoice_digest: @invoice_digest,
-        signature_properties_digest: @signature_properties_digest
+        signed_properties_hash: @signed_properties_hash
       ),
 
       ZATCA::UBL::BaseComponent.new(name: "ds:SignatureValue", value: @signature_value),

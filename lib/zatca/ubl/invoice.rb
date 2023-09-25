@@ -213,21 +213,29 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
     # Current Version
     @certificate_signature = parsed_certificate.signature
 
-    # Hash signed properties
-    signed_properties = ZATCA::UBL::Signing::SignedProperties.new(
+    # ZATCA requires a different set of attributes when hashing the SignedProperties
+    # attributes and does not want those attributes present in the actual XML.
+    # So we'll have two sets of signed properties for this purpose, one just
+    # to generate a hash out of, and one to actually include in the XML.
+    # See: https://zatca1.discourse.group/t/what-do-signed-properties-look-like-when-hashing/717
+    #
+    # The other SignedProperties that's in the XML is generated when we construct
+    # the Signature element below
+    signed_properties_for_hashing = ZATCA::UBL::Signing::SignedProperties.new(
       signing_time: signing_time,
       cert_digest_value: parsed_certificate.hash,
       cert_issuer_name: parsed_certificate.issuer_name,
       cert_serial_number: parsed_certificate.serial_number
     )
 
-    signature_properties_digest = signed_properties.generate_hash[:hexdigest_base64]
+
+    signed_properties_hash = signed_properties_for_hashing.generate_hash[:hexdigest_base64]
 
     # Create the signature element using the certficiate, invoice hash, and signed
     # properties hash
     signature_element = ZATCA::UBL::Signing::Signature.new(
-      invoice_digest_value: generated_hash[:base64],
-      signature_properties_digest: signature_properties_digest,
+      invoice_hash: generated_hash[:base64],
+      signed_properties_hash: signed_properties_hash,
 
       # Current Version
       signature_value: @signed_hash,

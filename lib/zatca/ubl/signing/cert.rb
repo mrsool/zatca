@@ -27,32 +27,22 @@ class ZATCA::UBL::Signing::Cert < ZATCA::UBL::BaseComponent
       ZATCA::UBL::BaseComponent.new(name: "xades:CertDigest", elements: [
         ZATCA::UBL::BaseComponent.new(
           name: "ds:DigestMethod",
-          attributes: attributes_for_signing.merge({
+          attributes: {
             "Algorithm" => "http://www.w3.org/2001/04/xmlenc#sha256"
-          })
+          }
         ),
-        ZATCA::UBL::BaseComponent.new(name: "ds:DigestValue", value: @cert_digest_value, attributes: attributes_for_signing)
+        ZATCA::UBL::BaseComponent.new(name: "ds:DigestValue", value: @cert_digest_value, attributes: signing_attributes)
       ]),
       ZATCA::UBL::BaseComponent.new(name: "xades:IssuerSerial", elements: [
         ZATCA::UBL::BaseComponent.new(
           name: "ds:X509IssuerName",
-          value: @cert_issuer_name,
-          attributes: attributes_for_signing
+          value: @cert_issuer_name
         ),
         ZATCA::UBL::BaseComponent.new(
           name: "ds:X509SerialNumber",
-          value: @cert_serial_number,
-          attributes: attributes_for_signing
+          value: @cert_serial_number
         )
       ])
     ]
-  end
-
-  private
-
-  def attributes_for_signing
-    {
-      "xmlns:ds" => "http://www.w3.org/2000/09/xmldsig#"
-    }
   end
 end
