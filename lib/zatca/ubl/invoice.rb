@@ -16,6 +16,9 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
   attr_reader :signed_hash_bytes
   attr_reader :public_key_bytes
   attr_reader :certificate_signature
+  attr_reader :qualifying_properties
+
+  attr_accessor :signature, :qr_code
 
   option :id, type: Dry::Types["coercible.string"]
   option :uuid, type: Dry::Types["coercible.string"]
@@ -64,8 +67,6 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
     type: ZATCA::Types.Instance(ZATCA::UBL::Signing::Signature).optional,
     optional: true,
     default: proc {}
-
-  attr_accessor :signature, :qr_code
 
   def name
     "Invoice"
@@ -166,8 +167,26 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
     ZATCA::Signing::Invoice.generate_base64_hash(canonicalized_xml)
   end
 
-  def to_base64(pretty: false)
+  # When submitting to ZATCA, we need to submit the XML in Base64 format, and it
+  # needs to be pretty-printed matching their indentation style.
+  # The pretty option here is left only for debugging purposes.
+  def to_base64(pretty: true)
     Base64.strict_encode64(generate_xml(pretty: pretty))
+  end
+
+  # HACK:
+  # Override this method because dry-initializer isn't helping us by having
+  # an after_initialize callback. We just need to set the qualifying properties
+  # at any point before generating the XML.
+  def generate_xml(pretty: true, spaces: 2)
+    set_qualifying_properties(
+      signing_time: @signature&.signing_time,
+      cert_digest_value: @signature&.cert_digest_value,
+      cert_issuer_name: @signature&.cert_issuer_name,
+      cert_serial_number: @signature&.cert_serial_number
+    )
+
+    super(pretty: pretty, spaces: spaces)
   end
 
   def generate_unsigned_xml(pretty: false)
@@ -189,9 +208,12 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
   def sign(
     private_key_path:,
     certificate_path:,
-    signing_time: Time.now.utc.strftime("%Y-%m-%dT%H:%M:%SZ"),
+    signing_time: Time.now.utc.strftime("%Y-%m-%dT%H:%M:%S"),
     decode_private_key_from_base64: false
   )
+    # ZATCA does not like signing_times ending with Z
+    signing_time = signing_time.delete_suffix("Z")
+
     # Returns a hash with the invoice's SHA-256 hash and the Base64 version of it
     # in the format {hash: "SHA-256 hash", base64: "Base64 version of the hash"}
     generated_hash = generate_hash
@@ -221,12 +243,38 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
     #
     # The other SignedProperties that's in the XML is generated when we construct
     # the Signature element below
+
     signed_properties_for_hashing = ZATCA::UBL::Signing::SignedProperties.new(
       signing_time: signing_time,
       cert_digest_value: parsed_certificate.hash,
       cert_issuer_name: parsed_certificate.issuer_name,
       cert_serial_number: parsed_certificate.serial_number
     )
+
+    set_qualifying_properties(
+      signing_time: signing_time,
+      cert_digest_value: parsed_certificate.hash,
+      cert_issuer_name: parsed_certificate.issuer_name,
+      cert_serial_number: parsed_certificate.serial_number
+    )
+
+    # ZATCA uses very specific whitespace also for the version of this block
+    # that we need to submit to their servers, so we will keep a copy of the XML
+    # as it should be spaced, and then after building the XML we will replace
+    # the QualifyingProperties block with this one.
+    #
+    # See: https://zatca1.discourse.group/t/what-do-signed-properties-look-like-when-hashing/717
+    #
+    # If their server is ever updated to format the block before hashing it on their
+    # end, we can safely remove this behavior.
+    @qualifying_properties = ZATCA::Hacks.zatca_indented_qualifying_properties(
+      signing_time: signing_time,
+      cert_digest_value: parsed_certificate.hash,
+      cert_issuer_name: parsed_certificate.issuer_name,
+      cert_serial_number: parsed_certificate.serial_number
+    )
+
+    puts signed_properties_for_hashing.send(:zatca_whitespaced_xml_for_hashing)
 
     signed_properties_hash = signed_properties_for_hashing.generate_hash[:hexdigest_base64]
 
@@ -348,5 +396,28 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
     end
 
     @_added_sequential_ids_to_invoice_lines = true
+  end
+
+  # ZATCA uses very specific whitespace also for the version of this block
+  # that we need to submit to their servers, so we will keep a copy of the XML
+  # as it should be spaced, and then after building the XML we will replace
+  # the QualifyingProperties block with this one.
+  #
+  # See: https://zatca1.discourse.group/t/what-do-signed-properties-look-like-when-hashing/717
+  #
+  # If their server is ever updated to format the block before hashing it on their
+  # end, we can safely remove this behavior.
+  def set_qualifying_properties(
+    signing_time:,
+    cert_digest_value:,
+    cert_issuer_name:,
+    cert_serial_number:
+  )
+    @qualifying_properties = ZATCA::Hacks.zatca_indented_qualifying_properties(
+      signing_time: signing_time,
+      cert_digest_value: cert_digest_value,
+      cert_issuer_name: cert_issuer_name,
+      cert_serial_number: cert_serial_number
+    )
   end
 end

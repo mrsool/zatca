@@ -40,25 +40,25 @@
                 </ds:X509Data>
               </ds:KeyInfo>
               <ds:Object>
-                <xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Target="signature">
-                  <xades:SignedProperties Id="xadesSignedProperties">
-                    <xades:SignedSignatureProperties>
-                      <xades:SigningTime>2022-03-18T14:13:54Z</xades:SigningTime>
-                      <xades:SigningCertificate>
-                        <xades:Cert>
-                          <xades:CertDigest>
-                            <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
-                            <ds:DigestValue>ZjFmMmY0NWM0M2NjMmY0MGM0ODkzNGI5NDg0Mjg0ODhkYzMwZDFkOThlYTI5YjNlNmU1ODk3MDQ3ZGE4MzdlZg==</ds:DigestValue>
-                          </xades:CertDigest>
-                          <xades:IssuerSerial>
-                            <ds:X509IssuerName>CN=TSZEINVOICE-SubCA-1, DC=extgazt, DC=gov, DC=local</ds:X509IssuerName>
-                            <ds:X509SerialNumber>2475382850646064994238214165482959904908010628</ds:X509SerialNumber>
-                          </xades:IssuerSerial>
-                        </xades:Cert>
-                      </xades:SigningCertificate>
-                    </xades:SignedSignatureProperties>
-                  </xades:SignedProperties>
-                </xades:QualifyingProperties>
+                            <xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Target="signature">
+                                <xades:SignedProperties Id="xadesSignedProperties">
+                                    <xades:SignedSignatureProperties>
+                                        <xades:SigningTime>2022-03-18T14:13:54</xades:SigningTime>
+                                        <xades:SigningCertificate>
+                                            <xades:Cert>
+                                                <xades:CertDigest>
+                                                    <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+                                                    <ds:DigestValue>ZjFmMmY0NWM0M2NjMmY0MGM0ODkzNGI5NDg0Mjg0ODhkYzMwZDFkOThlYTI5YjNlNmU1ODk3MDQ3ZGE4MzdlZg==</ds:DigestValue>
+                                                </xades:CertDigest>
+                                                <xades:IssuerSerial>
+                                                    <ds:X509IssuerName>CN=TSZEINVOICE-SubCA-1, DC=extgazt, DC=gov, DC=local</ds:X509IssuerName>
+                                                    <ds:X509SerialNumber>2475382850646064994238214165482959904908010628</ds:X509SerialNumber>
+                                                </xades:IssuerSerial>
+                                            </xades:Cert>
+                                        </xades:SigningCertificate>
+                                    </xades:SignedSignatureProperties>
+                                </xades:SignedProperties>
+                            </xades:QualifyingProperties>
               </ds:Object>
             </ds:Signature>
           </sac:SignatureInformation>

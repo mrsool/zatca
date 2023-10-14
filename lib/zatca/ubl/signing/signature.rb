@@ -1,4 +1,6 @@
 class ZATCA::UBL::Signing::Signature < ZATCA::UBL::BaseComponent
+  attr_reader :signing_time, :cert_digest_value, :cert_issuer_name, :cert_serial_number
+
   def initialize(
     invoice_hash:, signed_properties_hash:, signature_value:,
     certificate:, signing_time:, cert_digest_value:, cert_issuer_name:,
