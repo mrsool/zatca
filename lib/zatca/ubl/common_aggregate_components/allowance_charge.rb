@@ -1,3 +1,5 @@
+require "active_support"
+
 class ZATCA::UBL::CommonAggregateComponents::AllowanceCharge < ZATCA::UBL::BaseComponent
   attr_accessor :id, :charge_indicator, :allowance_charge_reason, :amount
 

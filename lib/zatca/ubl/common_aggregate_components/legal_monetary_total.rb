@@ -1,3 +1,5 @@
+require "active_support"
+
 class ZATCA::UBL::CommonAggregateComponents::LegalMonetaryTotal < ZATCA::UBL::BaseComponent
   attr_reader :line_extension_amount, :tax_exclusive_amount,
     :tax_inclusive_amount, :allowance_total_amount, :prepaid_amount,

@@ -1,3 +1,5 @@
+require "active_support"
+
 class ZATCA::UBL::Builder
   extend Dry::Initializer
 

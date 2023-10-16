@@ -1,3 +1,5 @@
+require "active_support"
+
 class ZATCA::UBL::BaseComponent
   extend Dry::Initializer
   attr_accessor :elements, :attributes, :name, :value, :index
