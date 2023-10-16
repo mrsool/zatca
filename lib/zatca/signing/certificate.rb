@@ -5,8 +5,7 @@ class ZATCA::Signing::Certificate
 
   # Returns the certificate hashed with SHA256 then Base64 encoded
   def self.generate_base64_hash(base64_certificate)
-    sha256 = Digest::SHA256.hexdigest(base64_certificate)
-    Base64.strict_encode64(sha256)
+    ZATCA::Hashing.generate_hashes(base64_certificate)[:hexdigest_base64]
   end
 
   def self.read_certificate(certificate_path)

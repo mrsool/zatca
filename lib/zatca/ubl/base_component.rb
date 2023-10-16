@@ -122,8 +122,4 @@ class ZATCA::UBL::BaseComponent
   def generate_xml(pretty: true, spaces: 2)
     ZATCA::UBL::Builder.new(element: self).build(pretty: pretty, spaces: spaces)
   end
-
-  def generate_hash
-    ZATCA::Signing::Invoice.generate_base64_hash(generate_xml)
-  end
 end

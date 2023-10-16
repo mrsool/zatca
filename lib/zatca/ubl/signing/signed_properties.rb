@@ -35,7 +35,7 @@ class ZATCA::UBL::Signing::SignedProperties < ZATCA::UBL::BaseComponent
   end
 
   def generate_hash
-    ZATCA::Signing::Invoice.generate_base64_hash(zatca_whitespaced_xml_for_hashing)
+    ZATCA::Hashing.generate_hashes(zatca_whitespaced_xml_for_hashing)[:hexdigest_base64]
   end
 
   private

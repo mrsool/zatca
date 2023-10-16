@@ -164,7 +164,7 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
   def generate_hash
     canonicalized_xml = generate_unsigned_xml(pretty: false)
 
-    ZATCA::Signing::Invoice.generate_base64_hash(canonicalized_xml)
+    ZATCA::Hashing.generate_hashes(canonicalized_xml)[:base64]
   end
 
   # When submitting to ZATCA, we need to submit the XML in Base64 format, and it
@@ -191,16 +191,23 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
 
   def generate_unsigned_xml(pretty: false)
     # HACK: Set signature and QR code to nil temporarily so they get removed
-    # from the XML before generating the hash.
+    # from the XML before generating the unsigned XML. An unsigned einvoice
+    # should not have a signature or QR code, we additionally remove the qualifying
+    # properties because it is a replacement that happens on the generated XML and
+    # we only want that replacement on the version we submit to ZATCA.
     original_signature = signature
     original_qr_code = qr_code
+    original_qualifying_properties = @qualifying_properties
+
     self.signature = nil
     self.qr_code = nil
+    @qualifying_properties = nil
 
     unsigned_xml = generate_xml(pretty: pretty)
 
     self.signature = original_signature
     self.qr_code = original_qr_code
+    @qualifying_properties = original_qualifying_properties
 
     unsigned_xml
   end
@@ -214,13 +221,12 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
     # ZATCA does not like signing_times ending with Z
     signing_time = signing_time.delete_suffix("Z")
 
-    # Returns a hash with the invoice's SHA-256 hash and the Base64 version of it
-    # in the format {hash: "SHA-256 hash", base64: "Base64 version of the hash"}
-    generated_hash = generate_hash
+    canonicalized_xml = generate_unsigned_xml(pretty: false)
+    generated_hashes = ZATCA::Hashing.generate_hashes(canonicalized_xml)
 
     # Sign the invoice hash using the private key
     signature = ZATCA::Signing::ECDSA.sign(
-      content: generated_hash[:hexdigest],
+      content: generated_hashes[:hexdigest],
       private_key_path: private_key_path,
       decode_from_base64: decode_private_key_from_base64
     )
@@ -274,14 +280,12 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
       cert_serial_number: parsed_certificate.serial_number
     )
 
-    puts signed_properties_for_hashing.send(:zatca_whitespaced_xml_for_hashing)
-
-    signed_properties_hash = signed_properties_for_hashing.generate_hash[:hexdigest_base64]
+    signed_properties_hash = signed_properties_for_hashing.generate_hash
 
     # Create the signature element using the certficiate, invoice hash, and signed
     # properties hash
     signature_element = ZATCA::UBL::Signing::Signature.new(
-      invoice_hash: generated_hash[:base64],
+      invoice_hash: generated_hashes[:base64],
       signed_properties_hash: signed_properties_hash,
 
       # Current Version
