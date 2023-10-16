@@ -53,12 +53,8 @@ generator = ZATCA::QRCodeGenerator.new(tags)
 generator.render(size: 512)
 ```
 
+## Notice of Non-Affiliation and Disclaimer
+This library is not affiliated, associated, authorized, endorsed by, or in any way officially connected with ZATCA (Zakat, Tax and Customs Authority), or any of its subsidiaries or its affiliates. The official ZATCA website can be found at https://zatca.gov.sa.
+
 ## Phase 2
-Documentation is still in progress, for now you can refer to the [invoice spec](spec/lib/zatca/ubl/invoice_spec.rb).
-
-There are unit tests that have been tested against ZATCA's SDK for the generated XML.
-
-Remaining work:
-- [API integration and tests](https://github.com/mrsool/zatca/issues/11)
-- [Generate certificates and signing requests](https://github.com/mrsool/zatca/issues/16)
-- Documentation
+Documentation is still in progress, and can be found in this repository's [wiki](https://github.com/mrsool/zatca/wiki)
