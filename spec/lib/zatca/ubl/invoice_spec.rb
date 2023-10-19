@@ -17,7 +17,7 @@ describe ZATCA::UBL::Invoice do
       invoice = construct_unsigned_simplified_invoice
 
       # TODO: Remove these once done testing
-      File.write("TEST_ME_WITH_ZATCA_UNSIGNED.xml", invoice.generate_xml(pretty: false))
+      File.write("TEST_ME_WITH_ZATCA_UNSIGNED.xml", invoice.generate_xml(canonicalized: false))
 
       # Hash the invoice
       invoice_hash = invoice.generate_hash
@@ -56,7 +56,7 @@ describe ZATCA::UBL::Invoice do
 
       zatca_xml = read_xml_fixture("simplified_invoice_signed.xml")
 
-      generated_xml = invoice.generate_xml(pretty: true)
+      generated_xml = invoice.generate_xml(canonicalized: true)
 
       # TODO: Remove these once done testing
       File.write("TEST_ME_WITH_ZATCA.xml", generated_xml)

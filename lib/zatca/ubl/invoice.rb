@@ -164,23 +164,42 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
   end
 
   def generate_hash
-    canonicalized_xml = generate_unsigned_xml(pretty: false)
+    # We don't need to apply the hacks here because they only apply to the
+    # QualifyingProperties block which is not present when generating the hash
+    canonicalized_xml = generate_unsigned_xml(
+      canonicalized: true,
+      apply_invoice_hacks: false,
+      remove_root_xml_tag: true
+    )
+
+    File.write("xml_for_signing.xml", canonicalized_xml)
 
     ZATCA::Hashing.generate_hashes(canonicalized_xml)[:base64]
   end
 
   # When submitting to ZATCA, we need to submit the XML in Base64 format, and it
   # needs to be pretty-printed matching their indentation style.
-  # The pretty option here is left only for debugging purposes.
-  def to_base64(pretty: true)
-    Base64.strict_encode64(generate_xml(pretty: pretty))
+  # The canonicalized option here is left only for debugging purposes.
+  def to_base64(canonicalized: false)
+    canonicalized_xml_with_hacks_applied = generate_xml(
+      canonicalized: canonicalized,
+      apply_invoice_hacks: true,
+      remove_root_xml_tag: false
+    )
+
+    Base64.strict_encode64(canonicalized_xml_with_hacks_applied)
   end
 
   # HACK:
   # Override this method because dry-initializer isn't helping us by having
   # an after_initialize callback. We just need to set the qualifying properties
   # at any point before generating the XML.
-  def generate_xml(pretty: true, spaces: 2)
+  def generate_xml(
+    canonicalized: false,
+    spaces: 4,
+    apply_invoice_hacks: true,
+    remove_root_xml_tag: false
+  )
     set_qualifying_properties(
       signing_time: @signature&.signing_time,
       cert_digest_value: @signature&.cert_digest_value,
@@ -188,10 +207,19 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
       cert_serial_number: @signature&.cert_serial_number
     )
 
-    super(pretty: pretty, spaces: spaces)
+    super(
+      canonicalized: canonicalized,
+      spaces: spaces,
+      apply_invoice_hacks: apply_invoice_hacks,
+      remove_root_xml_tag: remove_root_xml_tag
+    )
   end
 
-  def generate_unsigned_xml(pretty: false)
+  def generate_unsigned_xml(
+    canonicalized: false,
+    apply_invoice_hacks: false,
+    remove_root_xml_tag: false
+  )
     # HACK: Set signature and QR code to nil temporarily so they get removed
     # from the XML before generating the unsigned XML. An unsigned einvoice
     # should not have a signature or QR code, we additionally remove the qualifying
@@ -205,7 +233,11 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
     self.qr_code = nil
     @qualifying_properties = nil
 
-    unsigned_xml = generate_xml(pretty: pretty)
+    unsigned_xml = generate_xml(
+      canonicalized: canonicalized,
+      apply_invoice_hacks: apply_invoice_hacks,
+      remove_root_xml_tag: remove_root_xml_tag
+    )
 
     self.signature = original_signature
     self.qr_code = original_qr_code
@@ -223,7 +255,7 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
     # ZATCA does not like signing_times ending with Z
     signing_time = signing_time.delete_suffix("Z")
 
-    canonicalized_xml = generate_unsigned_xml(pretty: false)
+    canonicalized_xml = generate_unsigned_xml(canonicalized: true)
     generated_hashes = ZATCA::Hashing.generate_hashes(canonicalized_xml)
 
     # Sign the invoice hash using the private key

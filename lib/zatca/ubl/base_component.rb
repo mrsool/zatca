@@ -121,7 +121,17 @@ class ZATCA::UBL::BaseComponent
     end
   end
 
-  def generate_xml(pretty: true, spaces: 2)
-    ZATCA::UBL::Builder.new(element: self).build(pretty: pretty, spaces: spaces)
+  def generate_xml(
+    canonicalized: false,
+    spaces: 2,
+    apply_invoice_hacks: false,
+    remove_root_xml_tag: false
+  )
+    ZATCA::UBL::Builder.new(element: self).build(
+      canonicalized: canonicalized,
+      spaces: spaces,
+      apply_invoice_hacks: apply_invoice_hacks,
+      remove_root_xml_tag: remove_root_xml_tag
+    )
   end
 end
