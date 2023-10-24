@@ -51,27 +51,27 @@ class ZATCA::UBL::Builder
   # C14N 1.1 then manually adds back the whitespace in the format that ZATCA
   # expects.
   def canonicalized_xml(builder:)
+    builder.doc.canonicalize(Nokogiri::XML::XML_C14N_1_1)
+
+    # TODO: In case ZATCA ever asks us to use their whitespace format again.
+    # In some meetings they say we have to use it, in some meetings they say
+    # we don't. The simpler approach is that we don't use it.
+    #
     # ZATCA's docs specifically state we must use C14N 1.1 canonicalization.
-    xml = uncanonicalized_xml(builder: builder, spaces: 4)
-    xml_doc = Nokogiri::XML(xml)
+    # xml = uncanonicalized_xml(builder: builder, spaces: 4)
+    # xml_doc = Nokogiri::XML(xml)
 
-    canonical_xml = xml_doc.canonicalize(Nokogiri::XML::XML_C14N_1_1)
+    # canonical_xml = xml_doc.canonicalize(Nokogiri::XML::XML_C14N_1_1)
 
-    require "byebug"
-    byebug
-
-    canonical_xml
+    # canonical_xml
   end
 
   def uncanonicalized_xml(builder:, spaces: 4)
-    xml = builder.to_xml(indent: spaces.to_i)
+    builder.to_xml(indent: spaces.to_i)
 
-    xml = match_xml_string_to_zatca_whitespaces(xml)
-
-    require "byebug"
-    byebug
-
-    xml
+    # xml = builder.to_xml(indent: spaces.to_i)
+    # xml = match_xml_string_to_zatca_whitespaces(xml)
+    # xml
   end
 
   def match_xml_string_to_zatca_whitespaces(xml)
@@ -95,9 +95,13 @@ class ZATCA::UBL::Builder
     # This part is not clear, ZATCA shared documents with us that use CRLF
     # but the samples in the SDK use LF, so we're not sure which one is correct.
     # ZATCA wants CRLF (\r\n) in their canonicalized form instead of just LF (\n)
-    # xml.gsub!("\n", "\r\n")
+    xml.gsub!("\n", "\r\n")
+
+    xml
   end
 
+  # Not sure if this is needed, in some meetings ZATCA says you have to match
+  # their whitspace exactly and in some meetings they say you don't.
   # HACK: This is really hacky, using regexes or XPaths would be better, but
   # that wasn't easy to build and maintain, so we're using this if/until we run
   # into issues.

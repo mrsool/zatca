@@ -10,7 +10,7 @@ describe ZATCA::UBL::Invoice do
       invoice = construct_simplified_invoice
       zatca_xml = read_xml_fixture("simplified_invoice_signed.xml")
 
-      expect(invoice.generate_xml).to eq(zatca_xml)
+      expect(invoice.generate_xml(canonicalized: false, spaces: 2)).to eq(zatca_xml)
     end
 
     it "should be able to create an unsigned invoice qr-less invoice then add them later" do
@@ -56,7 +56,7 @@ describe ZATCA::UBL::Invoice do
 
       zatca_xml = read_xml_fixture("simplified_invoice_signed.xml")
 
-      generated_xml = invoice.generate_xml(canonicalized: true)
+      generated_xml = invoice.generate_xml(canonicalized: false, spaces: 2)
 
       # TODO: Remove these once done testing
       File.write("TEST_ME_WITH_ZATCA.xml", generated_xml)
@@ -100,7 +100,7 @@ describe ZATCA::UBL::Invoice do
       invoice = construct_signed_standard_invoice
       zatca_xml = read_xml_fixture("standard_invoice.xml")
 
-      expect(invoice.generate_xml).to eq(zatca_xml)
+      expect(invoice.generate_xml(canonicalized: false, spaces: 2)).to eq(zatca_xml)
     end
 
     it "should be able to generate an unsigned qr-less standard invoice" do
@@ -117,7 +117,7 @@ describe ZATCA::UBL::Invoice do
         .gsub(/\s*<cac:AdditionalDocumentReference>\s*<cbc:ID>QR<\/cbc:ID>.*<\/cac:AdditionalDocumentReference>/m, "")
 
       File.write("STANDARD_UNSIGNED_TEST_WITH_ZATCA.xml", invoice.generate_xml)
-      expect(invoice.generate_xml).to eq(zatca_xml)
+      expect(invoice.generate_xml(canonicalized: false, spaces: 2)).to eq(zatca_xml)
     end
   end
 end

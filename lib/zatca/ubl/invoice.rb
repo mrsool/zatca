@@ -180,7 +180,7 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
   # When submitting to ZATCA, we need to submit the XML in Base64 format, and it
   # needs to be pretty-printed matching their indentation style.
   # The canonicalized option here is left only for debugging purposes.
-  def to_base64(canonicalized: false)
+  def to_base64(canonicalized: true)
     canonicalized_xml_with_hacks_applied = generate_xml(
       canonicalized: canonicalized,
       apply_invoice_hacks: true,
@@ -195,7 +195,7 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
   # an after_initialize callback. We just need to set the qualifying properties
   # at any point before generating the XML.
   def generate_xml(
-    canonicalized: false,
+    canonicalized: true,
     spaces: 4,
     apply_invoice_hacks: true,
     remove_root_xml_tag: false
@@ -216,7 +216,7 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
   end
 
   def generate_unsigned_xml(
-    canonicalized: false,
+    canonicalized: true,
     apply_invoice_hacks: false,
     remove_root_xml_tag: false
   )
