@@ -11,6 +11,7 @@ loader = Zeitwerk::Loader.for_gem
 loader.inflector.inflect(
   "zatca" => "ZATCA",
   "qr_code_generator" => "QRCodeGenerator",
+  "qr_code_extractor" => "QRCodeExtractor",
   "ubl" => "UBL",
   "csr" => "CSR",
   "ubl_document_signature" => "UBLDocumentSignature",
@@ -29,6 +30,10 @@ module ZATCA
 
   module Types
     include Dry.Types()
+  end
+
+  def self.extract_qr_base64_from_base64_invoice(base64_invoice)
+    QRCodeExtractor.new(invoice_base64: base64_invoice).extract
   end
 
   def self.render_qr_code(tags: nil, base64: nil)
