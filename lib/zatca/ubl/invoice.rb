@@ -25,6 +25,7 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
   option :id, type: Dry::Types["coercible.string"]
   option :uuid, type: Dry::Types["coercible.string"]
   option :note, type: Dry::Types["coercible.string"].optional, optional: true, default: proc {}
+  option :instruction_note, type: Dry::Types["coercible.string"].optional, optional: true, default: proc {}
   option :note_language_id, type: Dry::Types["coercible.string"].optional, optional: true, default: proc {}
   option :issue_date, type: Dry::Types["coercible.string"]
   option :issue_time, type: Dry::Types["coercible.string"]
@@ -145,7 +146,8 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
 
       # PaymentMeans
       ZATCA::UBL::BaseComponent.new(name: "cac:PaymentMeans", elements: [
-        ZATCA::UBL::BaseComponent.new(name: "cbc:PaymentMeansCode", value: payment_means_code)
+        ZATCA::UBL::BaseComponent.new(name: "cbc:PaymentMeansCode", value: payment_means_code),
+        instruction_note_element
       ]),
 
       # AllowanceCharges
@@ -399,6 +401,12 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
       ZATCA::UBL::BaseComponent.new(name: "cbc:ID", value: "urn:oasis:names:specification:ubl:signature:Invoice"),
       ZATCA::UBL::BaseComponent.new(name: "cbc:SignatureMethod", value: "urn:oasis:names:specification:ubl:dsig:enveloped:xades")
     ])
+  end
+
+  def instruction_note_element
+    return nil if instruction_note.blank?
+
+    ZATCA::UBL::BaseComponent.new(name: "cbc:InstructionNote", value: instruction_note)
   end
 
   def add_sequential_ids
