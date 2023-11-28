@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "zatca/version"
+require_relative "zatca/types"
 
 require "active_support"
 require "zeitwerk"
@@ -27,10 +28,6 @@ module ZATCA
   extend self
 
   class Error < StandardError; end
-
-  module Types
-    include Dry.Types()
-  end
 
   def self.extract_qr_base64_from_base64_invoice(base64_invoice)
     QRCodeExtractor.new(invoice_base64: base64_invoice).extract

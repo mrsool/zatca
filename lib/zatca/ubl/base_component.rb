@@ -1,4 +1,6 @@
 require "active_support"
+require "dry-initializer"
+require_relative "../types"
 
 class ZATCA::UBL::BaseComponent
   extend Dry::Initializer
@@ -10,8 +12,12 @@ class ZATCA::UBL::BaseComponent
   #   end
   # end
 
+  ArrayOfBaseComponentOrNil = ZATCA::Types::Array.of(ZATCA::Types.Instance(ZATCA::UBL::BaseComponent))
+    .default { [] }
+    .constructor { |value| value.blank? ? [] : value.compact }
+
   option :elements,
-    type: ZATCA::Types::Array.of(ZATCA::Types.Instance(ZATCA::UBL::BaseComponent)),
+    type: ArrayOfBaseComponentOrNil,
     default: proc { [] },
     optional: true
 
