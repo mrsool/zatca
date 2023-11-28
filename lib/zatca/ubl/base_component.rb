@@ -1,4 +1,3 @@
-require "active_support"
 require "dry-initializer"
 require_relative "../types"
 

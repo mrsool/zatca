@@ -1,4 +1,3 @@
-require "active_support"
 require "starkbank-ecdsa"
 
 class ZATCA::Signing::ECDSA

@@ -1,5 +1,3 @@
-require "active_support"
-
 class ZATCA::Signing::CSR
   attr_reader :key, :csr_options, :mode
 

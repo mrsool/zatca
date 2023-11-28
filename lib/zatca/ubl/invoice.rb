@@ -1,5 +1,3 @@
-require "active_support"
-
 class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
   TYPES = {
     invoice: "388",

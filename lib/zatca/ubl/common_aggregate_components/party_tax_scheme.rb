@@ -1,5 +1,3 @@
-require "active_support"
-
 class ZATCA::UBL::CommonAggregateComponents::PartyTaxScheme < ZATCA::UBL::BaseComponent
   def initialize(
     company_id: nil,

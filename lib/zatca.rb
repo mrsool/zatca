@@ -3,7 +3,7 @@
 require_relative "zatca/version"
 require_relative "zatca/types"
 
-require "active_support"
+require "active_support/all"
 require "zeitwerk"
 require "dry-initializer"
 require "dry-types"
