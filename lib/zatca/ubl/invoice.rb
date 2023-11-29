@@ -24,6 +24,7 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
   option :uuid, type: Dry::Types["coercible.string"]
   option :note, type: Dry::Types["coercible.string"].optional, optional: true, default: proc {}
   option :instruction_note, type: Dry::Types["coercible.string"].optional, optional: true, default: proc {}
+  option :billing_reference, type: Dry::Types["coercible.string"].optional, optional: true, default: proc {}
   option :note_language_id, type: Dry::Types["coercible.string"].optional, optional: true, default: proc {}
   option :issue_date, type: Dry::Types["coercible.string"]
   option :issue_time, type: Dry::Types["coercible.string"]
@@ -109,6 +110,9 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
       # Currency codes
       ZATCA::UBL::BaseComponent.new(name: "cbc:DocumentCurrencyCode", value: currency_code),
       ZATCA::UBL::BaseComponent.new(name: "cbc:TaxCurrencyCode", value: currency_code),
+
+      # Billing reference for debit and credit notes
+      billing_reference_element,
 
       # Line Count Numeric (Standard Invoice only)
       line_count_numeric_element,
@@ -405,6 +409,16 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
     return nil if instruction_note.blank?
 
     ZATCA::UBL::BaseComponent.new(name: "cbc:InstructionNote", value: instruction_note)
+  end
+
+  def billing_reference_element
+    return nil if billing_reference.blank?
+
+    ZATCA::UBL::BaseComponent.new(name: "cac:BillingReference", elements: [
+      ZATCA::UBL::BaseComponent.new(name: "cac:InvoiceDocumentReference", elements: [
+        ZATCA::UBL::BaseComponent.new(name: "cbc:ID", value: billing_reference)
+      ])
+    ])
   end
 
   def add_sequential_ids
