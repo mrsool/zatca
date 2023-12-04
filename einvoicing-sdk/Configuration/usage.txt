@@ -12,4 +12,5 @@
 [-generateHash]: flag used to generate new hash for the provided invoice.
 [-validate]: flag used to validate invoice.
 [-nonprod]: flag pointing to use the csr and private key on non production server.
+[-sim]: flag pointing to use the csr and private key on simulation server.
 [-help]: flag used to display this help menu and exit.

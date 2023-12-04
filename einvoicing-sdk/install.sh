@@ -27,9 +27,9 @@ echo "export SDK_CONFIG=$SDK_CONFIG" >> ~/.zshrc
 
 
 
-# Commented out to avoid making errors in Container
-# source ~/.bash-profile
-# source ~/.zshrc
+
+source ~/.bash-profile
+source ~/.zshrc
 
 cd Configuration
 
