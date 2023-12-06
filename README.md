@@ -31,7 +31,7 @@ tags = {
   invoice_total: "115",
 }
 
-ZATCA.render_qr_code(tags)
+ZATCA.render_qr_code(tags: tags)
 # => data:image/png;base64,...
 # Hint (Try pasting the above into your web browser's address bar)
 ```
@@ -49,7 +49,7 @@ tags = ZATCA::Tags.new({
   invoice_total: "115",
 })
 
-generator = ZATCA::QRCodeGenerator.new(tags)
+generator = ZATCA::QRCodeGenerator.new(tags: tags)
 generator.render(size: 512)
 ```
 
