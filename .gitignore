@@ -6,5 +6,6 @@
 /pkg/
 /spec/reports/
 /tmp/
-
+/*.pem
 .byebug_history
+Gemfile.lock

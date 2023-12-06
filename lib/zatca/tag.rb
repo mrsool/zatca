@@ -5,8 +5,20 @@ module ZATCA
       vat_registration_number: 2,
       timestamp: 3,
       invoice_total: 4,
-      vat_total: 5
+      vat_total: 5,
+      xml_invoice_hash: 6,
+      ecdsa_signature: 7,
+      ecdsa_public_key: 8,
+      ecdsa_stamp_signature: 9 # TODO: is this needed ?
     }.freeze
+
+    PHASE_1_TAGS = [
+      :seller_name,
+      :vat_registration_number,
+      :timestamp,
+      :invoice_total,
+      :vat_total
+    ].freeze
 
     attr_accessor :id, :key, :value
 
@@ -20,14 +32,12 @@ module ZATCA
       {id: @id, key: @key, value: @value}
     end
 
-    def to_tlv
-      # TLV should be concatenated together without any separator in the following
-      # format: character_value_of_id character_value_of_value_length value_itself
-      # All of this should be in 8-bit ASCII.
-      tlv = @id.chr + @value.bytesize.chr + value
+    def should_be_utf8_encoded?
+      PHASE_1_TAGS.include?(key)
+    end
 
-      # We need to use force_encoding because encode will raise errors when
-      # trying to encode a string with utf-8 characters.
+    def to_tlv
+      tlv = @id.chr + @value.bytesize.chr + @value
       tlv.force_encoding("ASCII-8BIT")
     end
   end

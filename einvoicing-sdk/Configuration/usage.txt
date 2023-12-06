@@ -1,0 +1,16 @@
+[-csr]: flag used to generate csr and private key.
+[-pem]: flag used to generate csr and private key in pem format.
+[-privateKey <fileName>]: The name of the private key output file.
+[-generatedCsr <fileName>]: The name of the csr output file.
+[-csrConfig] <fileName> : The name of the csr configuration file.
+[-invoice] <filename> : The name of the invoice file.
+[-qr]: flag used to generate qr.
+[-sign]: flag used to sign invoice.
+[-signedInvoice <fileName>]: The name of the signed invoice output file.
+[-invoiceRequest]: flag used to generate invoice request.
+[-apiRequest <fileName>]: The name of the invoice json request output file
+[-generateHash]: flag used to generate new hash for the provided invoice.
+[-validate]: flag used to validate invoice.
+[-nonprod]: flag pointing to use the csr and private key on non production server.
+[-sim]: flag pointing to use the csr and private key on simulation server.
+[-help]: flag used to display this help menu and exit.

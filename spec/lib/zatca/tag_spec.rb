@@ -22,6 +22,22 @@ describe ZATCA::Tag do
     it "gets mapped from vat_total to 5" do
       expect(ZATCA::Tag.new(key: :vat_total, value: "").id).to eq(5)
     end
+
+    it "gets mapped from xml_invoice_hash to 6" do
+      expect(ZATCA::Tag.new(key: :xml_invoice_hash, value: "").id).to eq(6)
+    end
+
+    it "gets mapped from ecdsa_signature to 7" do
+      expect(ZATCA::Tag.new(key: :ecdsa_signature, value: "").id).to eq(7)
+    end
+
+    it "gets mapped from ecdsa_public_key to 8" do
+      expect(ZATCA::Tag.new(key: :ecdsa_public_key, value: "").id).to eq(8)
+    end
+
+    it "gets mapped from ecdsa_stamp_signature to 9" do
+      expect(ZATCA::Tag.new(key: :ecdsa_stamp_signature, value: "").id).to eq(9)
+    end
   end
 
   describe "#to_h" do

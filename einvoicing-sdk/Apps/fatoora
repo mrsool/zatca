@@ -1,0 +1,12 @@
+#!/bin/bash
+
+EXTVER=$(jq -r '.version' ${FATOORA_HOME}/global.json)
+
+CERTPASSWORD=$(jq -r '.certPassword' ${FATOORA_HOME}/global.json)
+
+
+java -Djdk.module.illegalAccess=deny -Djdk.sunec.disableNative=false -jar ${FATOORA_HOME}/zatca-einvoicing-sdk-${EXTVER}.jar --globalVersion $EXTVER -certpassword $CERTPASSWORD $1 $2 $3 $4 $5 $6
+
+
+
+

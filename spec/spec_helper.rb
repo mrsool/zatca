@@ -13,8 +13,12 @@
 # it.
 require_relative "../lib/zatca"
 
-Dir[File.expand_path("fixtures/", __dir__) + "/**/*.rb"].sort.each do |file|
-  require file
+dirs_to_require = ["support", "fixtures"]
+
+dirs_to_require.each do |dir|
+  Dir[File.join(__dir__, dir, "**/*.rb")].each do |file|
+    require file
+  end
 end
 
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration

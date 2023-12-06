@@ -1,0 +1,12 @@
+version: "3.9"
+
+services:
+  zatca:
+    build:
+      context: .
+    image: zatca:1.0.0
+    command: sh -c "(sh ./install.sh && /bin/bash)"
+    volumes:
+      - .:/zatca
+    tty: true
+    stdin_open: true

@@ -25,12 +25,20 @@ module ZATCA
       end.sort_by(&:id)
     end
 
+    def [](index)
+      @tags[index]
+    end
+
     def to_base64
       Base64.strict_encode64(to_tlv)
     end
 
-    private
+    # This is helpful for debugging only, for ZATCA's requirements just call `to_base64`
+    def to_hex_tlv
+      to_tlv.unpack1("H*")
+    end
 
+    # This is helpful for debugging only, for ZATCA's requirements just call `to_base64`
     def to_tlv
       @tags.map(&:to_tlv).join("")
     end
