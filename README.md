@@ -1,5 +1,5 @@
 # zatca
-![](https://img.shields.io/gem/v/zatca) ![](https://img.shields.io/github/workflow/status/mrsool/zatca/Ruby)
+![](https://img.shields.io/gem/v/zatca) ![](https://img.shields.io/github/actions/workflow/status/mrsool/zatca/test.yml?branch=main)
 
 A Ruby library for generating QR Codes and e-invoices according to the standard created by ZATCA in Saudi Arabia.
 
