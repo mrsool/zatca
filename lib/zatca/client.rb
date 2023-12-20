@@ -20,13 +20,14 @@ class ZATCA::Client
   DEFAULT_API_VERSION = "V2".freeze
   LANGUAGES = %w[ar en].freeze
 
-  def initialize(username:, password:, language: "ar", version: DEFAULT_API_VERSION, environment: :production)
+  def initialize(username:, password:, language: "ar", version: DEFAULT_API_VERSION, environment: :production, verbose: false)
     raise "Invalid language: #{language}, Please use one of: #{LANGUAGES}" unless LANGUAGES.include?(language)
 
     @username = username
     @password = password
     @language = language
     @version = version
+    @verbose = verbose
 
     @base_url = ENVIRONMENTS_TO_URLS_MAP[environment.to_sym] || PRODUCTION_BASE_URL
   end
@@ -132,6 +133,8 @@ class ZATCA::Client
     url = "#{@base_url}/#{path}"
     headers = default_headers.merge(headers)
 
+    log("Requesting #{method} #{url} with\n\nbody: #{body}\n\nheaders: #{headers}\n")
+
     client = if authenticated
       authenticated_request_cilent
     else
@@ -139,14 +142,28 @@ class ZATCA::Client
     end
 
     response = client.send(method, url, json: body, headers: headers)
+    log("Raw response: #{response}")
+
+    if response.instance_of?(HTTPX::ErrorResponse)
+      return {
+        message: response.to_s,
+        response_headers: response.response&.headers&.to_s,
+        response_body: response.response&.body&.to_s,
+        status: response.response&.status
+      }
+    end
 
     response_body = response.body.to_s
 
-    if response.headers["Content-Type"] == "application/json"
+    parsed_body = if response.headers["Content-Type"] == "application/json"
       parse_json_or_return_string(response_body)
     else
       response_body
     end
+
+    log("Response body: #{parsed_body}")
+
+    parsed_body
   end
 
   def authenticated_request_cilent
@@ -169,5 +186,12 @@ class ZATCA::Client
     JSON.parse(json)
   rescue JSON::ParserError
     json
+  end
+
+  def log(message)
+    return unless @verbose
+    message = "\n\n---------------------\n\n#{message}\n\n"
+
+    puts message
   end
 end
