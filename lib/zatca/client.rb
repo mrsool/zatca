@@ -4,6 +4,8 @@ require "json"
 # This wraps the API described here:
 # https://sandbox.zatca.gov.sa/IntegrationSandbox
 class ZATCA::Client
+  attr_accessor :before_submitting_request, :before_parsing_response
+
   # API URLs are not present in developer portal, they can only be found in a PDF
   # called Fatoora Portal User Manual, here:
   # https://zatca.gov.sa/en/E-Invoicing/Introduction/Guidelines/Documents/Fatoora%20portal%20user%20manual.pdf
@@ -20,7 +22,16 @@ class ZATCA::Client
   DEFAULT_API_VERSION = "V2".freeze
   LANGUAGES = %w[ar en].freeze
 
-  def initialize(username:, password:, language: "ar", version: DEFAULT_API_VERSION, environment: :production, verbose: false)
+  def initialize(
+    username:,
+    password:,
+    language: "ar",
+    version: DEFAULT_API_VERSION,
+    environment: :production,
+    verbose: false,
+    before_submitting_request: nil,
+    before_parsing_response: nil
+  )
     raise "Invalid language: #{language}, Please use one of: #{LANGUAGES}" unless LANGUAGES.include?(language)
 
     @username = username
@@ -30,6 +41,9 @@ class ZATCA::Client
     @verbose = verbose
 
     @base_url = ENVIRONMENTS_TO_URLS_MAP[environment.to_sym] || PRODUCTION_BASE_URL
+
+    @before_submitting_request = before_submitting_request
+    @before_parsing_response = before_parsing_response
   end
 
   # Reporting API
@@ -133,6 +147,7 @@ class ZATCA::Client
     url = "#{@base_url}/#{path}"
     headers = default_headers.merge(headers)
 
+    before_submitting_request&.call(method, url, body, headers)
     log("Requesting #{method} #{url} with\n\nbody: #{body}\n\nheaders: #{headers}\n")
 
     client = if authenticated
@@ -142,14 +157,13 @@ class ZATCA::Client
     end
 
     response = client.send(method, url, json: body, headers: headers)
+    before_parsing_response&.call(response)
     log("Raw response: #{response}")
 
     if response.instance_of?(HTTPX::ErrorResponse)
       return {
-        message: response.to_s,
-        response_headers: response.response&.headers&.to_s,
-        response_body: response.response&.body&.to_s,
-        status: response.response&.status
+        message: response.error&.message,
+        details: response.to_s
       }
     end
 
