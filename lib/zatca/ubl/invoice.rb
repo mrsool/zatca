@@ -176,8 +176,6 @@ class ZATCA::UBL::Invoice < ZATCA::UBL::BaseComponent
       remove_root_xml_tag: true
     )
 
-    File.write("xml_for_signing.xml", canonicalized_xml)
-
     ZATCA::Hashing.generate_hashes(canonicalized_xml)[:base64]
   end
 
